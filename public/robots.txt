@@ -1,0 +1,9 @@
+# Robots.txt for Sasa Travel App
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+
+# Sitemap
+Sitemap: https://sasatravel.com/sitemap.xml
+

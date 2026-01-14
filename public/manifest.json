@@ -1,0 +1,17 @@
+{
+  "name": "Sasa Travel",
+  "short_name": "SasaTravel",
+  "description": "Curated travel packages, destinations, and travel insights",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [
+    {
+      "src": "/sasa_logo.png",
+      "sizes": "any",
+      "type": "image/png"
+    }
+  ]
+}
+

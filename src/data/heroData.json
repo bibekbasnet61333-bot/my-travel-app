@@ -1,0 +1,44 @@
+{
+  "all": {
+    "images": [
+      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=2000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1537953773345-d172ccf13cf1?q=80&w=2000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1528181304800-259b08848526?q=80&w=2000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=2000&auto=format&fit=crop"
+    ],
+    "title": "Discover Your Perfect Journey",
+    "subtitle": "Choose from our curated collection of extraordinary travel experiences, each designed to create unforgettable memories."
+  },
+  "cultural": {
+    "images": [
+      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=2000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?q=80&w=2000&auto=format&fit=crop"
+    ],
+    "title": "Cultural Heritage Tours",
+    "subtitle": "Immerse yourself in ancient traditions and timeless cultures"
+  },
+  "luxury": {
+    "images": [
+      "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=2000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=2000&auto=format&fit=crop"
+    ],
+    "title": "Luxury Travel Experiences",
+    "subtitle": "Indulge in unparalleled luxury and bespoke adventures"
+  },
+  "wellness": {
+    "images": [
+      "https://images.unsplash.com/photo-1537953773345-d172ccf13cf1?q=80&w=2000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1544008237-b2b667d4c3d4?q=80&w=2000&auto=format&fit=crop"
+    ],
+    "title": "Wellness & Spiritual Retreats",
+    "subtitle": "Rejuvenate your body, mind, and spirit in sacred sanctuaries"
+  },
+  "adventure": {
+    "images": [
+      "https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?q=80&w=2000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1464207687429-7505649dae38?q=80&w=2000&auto=format&fit=crop"
+    ],
+    "title": "Adventure & Discovery Tours",
+    "subtitle": "Explore the world's most breathtaking landscapes and hidden treasures"
+  }
+}
