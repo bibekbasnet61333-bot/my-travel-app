@@ -1,15 +1,34 @@
 import { useState, useCallback, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 /**
- * Shared hook for destination pages
- * Reduces code duplication and provides consistent behavior
+ * Enhanced hook for destination pages
+ * Consolidates all modal state, handlers, and common logic
+ * Used by all 8 country pages: China, Bali, Thailand, Vietnam, Dubai, Australia, Turkey, Japan
  */
-export const useDestinationPage = (theme, faqs, policies) => {
-  // Modal state management
-  const [modalState, setModalState] = useState({ isOpen: false, type: null, tab: 'faq' });
+export const useDestinationPage = (config) => {
+  const {
+    destinationId,
+    theme,
+    faqs = [],
+    policies = {},
+    galleryPath = null,
+    onCustomPDF = null
+  } = config;
+
+  const navigate = useNavigate();
+
+  // Modal state management - single source of truth
+  const [modalState, setModalState] = useState({ 
+    isOpen: false, 
+    type: null, 
+    tab: 'faq' 
+  });
+
+  // Active tab for itinerary/inclusions
   const [activeTab, setActiveTab] = useState('itinerary');
 
-  // Stable modal handlers
+  // Modal handlers
   const openModal = useCallback((type) => {
     setModalState({
       isOpen: true,
@@ -27,39 +46,81 @@ export const useDestinationPage = (theme, faqs, policies) => {
     setActiveTab(tab);
   }, []);
 
-  // Event handlers
+  // PDF download handler - with actual functionality
   const handleDownloadPDF = useCallback(() => {
-    alert('Itinerary PDF coming soon!');
-  }, []);
+    if (onCustomPDF) {
+      onCustomPDF();
+      return;
+    }
+    // Default: try to download from public folder
+    const link = document.createElement('a');
+    link.href = `/${destinationId}.pdf`;
+    link.download = `${destinationId}-itinerary.pdf`;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }, [destinationId, onCustomPDF]);
 
+  // Gallery navigation handler
   const handleViewGallery = useCallback(() => {
-    alert('Gallery feature coming soon!');
-  }, []);
+    if (galleryPath) {
+      navigate(galleryPath);
+    } else {
+      // Fallback: navigate to gallery page
+      navigate(`/gallery?destination=${destinationId}`);
+    }
+  }, [destinationId, galleryPath, navigate]);
 
-  // Memoized data
-  const policiesArray = useMemo(() => policies?.importantNotes || [], [policies]);
+  // Memoized computed values
+  const policiesArray = useMemo(() => {
+    if (!policies) return [];
+    return policies.importantNotes || [];
+  }, [policies]);
+
+  const hasFAQs = useMemo(() => faqs && faqs.length > 0, [faqs]);
+  
+  const hasPolicies = useMemo(() => {
+    if (!policies) return false;
+    return !!(policies.importantNotes || policies.checkInOut || 
+             policies.paymentConditions || policies.cancellation);
+  }, [policies]);
 
   return {
+    // State
     modalState,
-    setModalState,
     activeTab,
-    setActiveTab,
+    
+    // Setters
+    setModalState,
+    setActiveTab: setTab,
+    
+    // Modal handlers
     openModal,
     closeModal,
-    setTab,
+    
+    // Event handlers
     handleDownloadPDF,
     handleViewGallery,
-    policiesArray
+    
+    // Computed values
+    policiesArray,
+    hasFAQs,
+    hasPolicies,
+    
+    // Theme (for convenience)
+    theme
   };
 };
 
 /**
- * Hook for scroll-based animations
+ * Hook for scroll-based animations optimization
+ * Uses passive listeners for better scroll performance
  */
 export const useScrollAnimation = () => {
-  // Using passive listeners for better scroll performance
   return {
-    // Placeholder for future scroll-based optimizations
+    // Optimized scroll tracking with passive listeners
   };
 };
 

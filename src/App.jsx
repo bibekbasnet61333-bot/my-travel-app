@@ -7,7 +7,6 @@ import ErrorBoundary from "./components/ui/ErrorBoundary";
 // Lazy load page components for better performance
 const Home = lazy(() => import("./pages/home/home"));
 const Destinations = lazy(() => import("./pages/Destinations"));
-const DestinationDetail = lazy(() => import("./pages/DestinationDetail"));
 const China = lazy(() => import("./pages/china/China"));
 const Thailand = lazy(() => import("./pages/thailand/Thailand"));
 const Vietnam = lazy(() => import("./pages/vietnam/Vietnam"));
@@ -49,7 +48,6 @@ function AppContent() {
             <Routes key={routeKey}>
             <Route path="/" element={<Home />} />
             <Route path="/destinations" element={<Destinations />} />
-            <Route path="/destinations/:category/:slug" element={<DestinationDetail />} />
             <Route path="/destinations/international/bali" element={<Bali />} />
             <Route path="/destinations/international/vietnam" element={<Vietnam />} />
             <Route path="/destinations/international/dubai" element={<Dubai />} />

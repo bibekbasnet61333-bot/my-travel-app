@@ -1,12 +1,17 @@
-import { useMemo, useState, useCallback } from 'react';
+import { memo } from 'react';
 import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
-import ScrollProgressDubai from '../../components/ui/ScrollProgress';
+
+// Reusable destination components
 import DestinationHero from '../../components/destination/DestinationHero';
 import DestinationAbout from '../../components/destination/DestinationAbout';
 import DestinationTabbedContent from '../../components/destination/DestinationTabbedContent';
 import DestinationKnowBeforeYouGoModal from '../../components/destination/DestinationKnowBeforeYouGoModal';
-import { getGalleryPath } from '../../utils/galleryNavigation';
+
+// Hook for shared destination page logic
+import { useDestinationPage } from '../../hooks/useDestinationPage';
+
+// Scroll progress with theme color
+import ScrollProgress from '../../components/ui/ScrollProgress';
 
 // Dubai data
 import {
@@ -18,54 +23,28 @@ import {
   dubaiInclusionsData,
   dubaiExclusionsData,
   dubaiFAQs,
-  dubaiPolicies,
-  dubaiDestinationData
+  dubaiPolicies
 } from '../../data/destinations/dubai';
 
-const Dubai = () => {
-  const navigate = useNavigate();
-
-  // Dubai-specific data
-  const itinerary = useMemo(() => dubaiItineraryData, []);
-  const inclusions = useMemo(() => dubaiInclusionsData, []);
-  const exclusions = useMemo(() => dubaiExclusionsData, []);
-  const faqs = useMemo(() => dubaiFAQs, []);
-  const policies = useMemo(() => dubaiPolicies, []);
-
-  // Modal state
-  const [modalState, setModalState] = useState({ isOpen: false, type: null, tab: 'faq' });
-
-  // Modal handlers
-  const openModal = useCallback((type) => {
-    let initialTab = 'faq';
-    if (type === 'policies') {
-      initialTab = 'policies';
-    }
-    setModalState({ isOpen: true, type, tab: initialTab });
-  }, []);
-
-  const closeModal = useCallback(() => {
-    setModalState({ isOpen: false, type: null, tab: 'faq' });
-  }, []);
-
-  // PDF download handler
-  const handleDownloadPDF = () => {
-    const link = document.createElement('a');
-    link.href = '/dubai.pdf';
-    link.download = 'dubai-itinerary.pdf';
-    link.target = '_blank';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
-  // View gallery handler - navigates to gallery page using React Router
-  const handleViewGallery = useCallback(() => {
-    const galleryPath = getGalleryPath('dubai');
-    if (galleryPath) {
-      navigate(galleryPath);
-    }
-  }, [navigate]);
+/**
+ * Dubai destination page
+ * Uses useDestinationPage hook for consolidated logic
+ */
+const Dubai = memo(() => {
+  // Use shared hook for modal state and handlers
+  const {
+    modalState,
+    openModal,
+    closeModal,
+    handleDownloadPDF,
+    handleViewGallery
+  } = useDestinationPage({
+    destinationId: 'dubai',
+    theme: dubaiTheme,
+    faqs: dubaiFAQs,
+    policies: dubaiPolicies,
+    galleryPath: '/gallery/dubai'
+  });
 
   // Ensure theme has all required properties
   const theme = {
@@ -124,19 +103,17 @@ const Dubai = () => {
           onOpenModal={openModal}
         />
 
-        {/* Tabbed Content with Side-by-Side Contact Form */}
+        {/* Tabbed Content */}
         <section className="py-16">
           <div className="container mx-auto px-6">
             <DestinationTabbedContent
-              itinerary={itinerary}
-              inclusions={inclusions}
-              exclusions={exclusions}
-              faqs={faqs}
-              policies={policies}
+              itinerary={dubaiItineraryData}
+              inclusions={dubaiInclusionsData}
+              exclusions={dubaiExclusionsData}
               theme={theme}
+              onOpenModal={openModal}
               pageClass="from-amber-50/30 via-stone-50/20 to-slate-50/30"
               contactFormId={`${theme.destinationId}-contact-form`}
-              onOpenModal={openModal}
             />
           </div>
         </section>
@@ -148,19 +125,20 @@ const Dubai = () => {
         isOpen={modalState.isOpen}
         onClose={closeModal}
         initialTab={modalState.tab}
-        faqs={faqs}
-        policies={policies}
+        faqs={dubaiFAQs}
+        policies={dubaiPolicies}
         theme={theme}
         destinationName={theme.destinationName}
         destinationId={theme.destinationId}
-        galleryImages={dubaiDestinationData.galleryImages || []}
       />
 
       {/* Scroll Progress Indicator */}
-      <ScrollProgressDubai />
+      <ScrollProgress color={theme.scrollProgress || "from-amber-600 via-orange-500 to-yellow-600"} height={3} />
     </motion.div>
   );
-};
+});
+
+Dubai.displayName = 'Dubai';
 
 export default Dubai;
 

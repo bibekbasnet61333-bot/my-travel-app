@@ -1,9 +1,5 @@
-import { useMemo, useState, useCallback } from 'react';
+import { memo } from 'react';
 import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
-
-// Reusable scroll progress component
-import ScrollProgressJapan from '../../components/ui/ScrollProgress';
 
 // Reusable destination components
 import DestinationHero from '../../components/destination/DestinationHero';
@@ -11,8 +7,11 @@ import DestinationAbout from '../../components/destination/DestinationAbout';
 import DestinationTabbedContent from '../../components/destination/DestinationTabbedContent';
 import DestinationKnowBeforeYouGoModal from '../../components/destination/DestinationKnowBeforeYouGoModal';
 
-// Gallery navigation utility
-import { getGalleryPath } from '../../utils/galleryNavigation';
+// Hook for shared destination page logic
+import { useDestinationPage } from '../../hooks/useDestinationPage';
+
+// Scroll progress with theme color
+import ScrollProgress from '../../components/ui/ScrollProgress';
 
 // Japan data
 import {
@@ -24,56 +23,28 @@ import {
   japanInclusionsData,
   japanExclusionsData,
   japanFAQs,
-  japanPolicies,
-  japanDestinationData
+  japanPolicies
 } from '../../data/destinations/japan';
 
-
-
-const Japan = () => {
-  const navigate = useNavigate();
-
-  // Japan-specific data
-  const itinerary = useMemo(() => japanItineraryData, []);
-  const inclusions = useMemo(() => japanInclusionsData, []);
-  const exclusions = useMemo(() => japanExclusionsData, []);
-  const faqs = useMemo(() => japanFAQs, []);
-  const policies = useMemo(() => japanPolicies, []);
-
-  // Modal state
-  const [modalState, setModalState] = useState({ isOpen: false, type: null, tab: 'faq' });
-
-  // Modal handlers
-  const openModal = useCallback((type) => {
-    let initialTab = 'faq';
-    if (type === 'policies') {
-      initialTab = 'policies';
-    }
-    setModalState({ isOpen: true, type, tab: initialTab });
-  }, []);
-
-  const closeModal = useCallback(() => {
-    setModalState({ isOpen: false, type: null, tab: 'faq' });
-  }, []);
-
-  // PDF download handler
-  const handleDownloadPDF = () => {
-    const link = document.createElement('a');
-    link.href = '/japan.pdf';
-    link.download = 'japan-itinerary.pdf';
-    link.target = '_blank';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
-  // View gallery handler - navigates to gallery page using React Router
-  const handleViewGallery = useCallback(() => {
-    const galleryPath = getGalleryPath('japan');
-    if (galleryPath) {
-      navigate(galleryPath);
-    }
-  }, [navigate]);
+/**
+ * Japan destination page
+ * Uses useDestinationPage hook for consolidated logic
+ */
+const Japan = memo(() => {
+  // Use shared hook for modal state and handlers
+  const {
+    modalState,
+    openModal,
+    closeModal,
+    handleDownloadPDF,
+    handleViewGallery
+  } = useDestinationPage({
+    destinationId: 'japan',
+    theme: japanTheme,
+    faqs: japanFAQs,
+    policies: japanPolicies,
+    galleryPath: '/gallery/japan'
+  });
 
   // Ensure theme has all required properties
   const theme = {
@@ -118,7 +89,7 @@ const Japan = () => {
           onViewGallery={handleViewGallery}
           contactFormId="japan-contact-form"
           tourTitle="7 Nights / 8 Days"
-          tourSubtitle="Tokyo • Hakone • Fuji • Osaka"
+          tourSubtitle="Tokyo - Hakone - Fuji - Osaka"
           tourSubtitleColor="#db2777"
           short
         />
@@ -133,19 +104,17 @@ const Japan = () => {
           onOpenModal={openModal}
         />
 
-        {/* Tabbed Content with Side-by-Side Contact Form */}
+        {/* Tabbed Content */}
         <section className="py-16">
           <div className="container mx-auto px-6">
             <DestinationTabbedContent
-              itinerary={itinerary}
-              inclusions={inclusions}
-              exclusions={exclusions}
-              faqs={faqs}
-              policies={policies}
+              itinerary={japanItineraryData}
+              inclusions={japanInclusionsData}
+              exclusions={japanExclusionsData}
               theme={theme}
+              onOpenModal={openModal}
               pageClass="from-pink-50/30 via-rose-50/20 to-pink-50/30"
               contactFormId={`${theme.destinationId}-contact-form`}
-              onOpenModal={openModal}
             />
           </div>
         </section>
@@ -157,19 +126,20 @@ const Japan = () => {
         isOpen={modalState.isOpen}
         onClose={closeModal}
         initialTab={modalState.tab}
-        faqs={faqs}
-        policies={policies}
+        faqs={japanFAQs}
+        policies={japanPolicies}
         theme={theme}
         destinationName={theme.destinationName}
         destinationId={theme.destinationId}
-        galleryImages={japanDestinationData.galleryImages || []}
       />
 
       {/* Scroll Progress Indicator */}
-      <ScrollProgressJapan />
+      <ScrollProgress color={theme.scrollProgress || "from-pink-600 via-rose-500 to-pink-600"} height={3} />
     </motion.div>
   );
-};
+});
+
+Japan.displayName = 'Japan';
 
 export default Japan;
 

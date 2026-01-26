@@ -1,9 +1,5 @@
-import { useMemo, useState, useCallback } from 'react';
+import { memo } from 'react';
 import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
-
-// Reusable scroll progress component
-import ScrollProgressAustralia from '../../components/ui/ScrollProgress';
 
 // Reusable destination components
 import DestinationHero from '../../components/destination/DestinationHero';
@@ -11,8 +7,11 @@ import DestinationAbout from '../../components/destination/DestinationAbout';
 import DestinationTabbedContent from '../../components/destination/DestinationTabbedContent';
 import DestinationKnowBeforeYouGoModal from '../../components/destination/DestinationKnowBeforeYouGoModal';
 
-// Gallery navigation utility
-import { getGalleryPath } from '../../utils/galleryNavigation';
+// Hook for shared destination page logic
+import { useDestinationPage } from '../../hooks/useDestinationPage';
+
+// Scroll progress with theme color
+import ScrollProgress from '../../components/ui/ScrollProgress';
 
 // Australia data
 import {
@@ -24,67 +23,39 @@ import {
   australiaInclusionsData,
   australiaExclusionsData,
   australiaFAQs,
-  australiaPolicies,
-  australiaDestinationData
+  australiaPolicies
 } from '../../data/destinations/australia';
 
-
-
-const Australia = () => {
-  const navigate = useNavigate();
-
-  // Australia-specific data
-  const itinerary = useMemo(() => australiaItineraryData, []);
-  const inclusions = useMemo(() => australiaInclusionsData, []);
-  const exclusions = useMemo(() => australiaExclusionsData, []);
-  const faqs = useMemo(() => australiaFAQs, []);
-  const policies = useMemo(() => australiaPolicies, []);
-
-  // Modal state
-  const [modalState, setModalState] = useState({ isOpen: false, type: null, tab: 'faq' });
-
-  // Modal handlers
-  const openModal = useCallback((type) => {
-    let initialTab = 'faq';
-    if (type === 'policies') {
-      initialTab = 'policies';
-    }
-    setModalState({ isOpen: true, type, tab: initialTab });
-  }, []);
-
-  const closeModal = useCallback(() => {
-    setModalState({ isOpen: false, type: null, tab: 'faq' });
-  }, []);
-
-  // PDF download handler
-  const handleDownloadPDF = () => {
-    const link = document.createElement('a');
-    link.href = '/australia.pdf';
-    link.download = 'australia-itinerary.pdf';
-    link.target = '_blank';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
-  // View gallery handler - navigates to gallery page using React Router
-  const handleViewGallery = useCallback(() => {
-    const galleryPath = getGalleryPath('australia');
-    if (galleryPath) {
-      navigate(galleryPath);
-    }
-  }, [navigate]);
+/**
+ * Australia destination page
+ * Uses useDestinationPage hook for consolidated logic
+ */
+const Australia = memo(() => {
+  // Use shared hook for modal state and handlers
+  const {
+    modalState,
+    openModal,
+    closeModal,
+    handleDownloadPDF,
+    handleViewGallery
+  } = useDestinationPage({
+    destinationId: 'australia',
+    theme: australiaTheme,
+    faqs: australiaFAQs,
+    policies: australiaPolicies,
+    galleryPath: '/gallery/australia'
+  });
 
   // Ensure theme has all required properties
   const theme = {
     ...australiaTheme,
     destinationId: australiaTheme.destinationId || 'australia',
-    backgroundGradient: 'from-indigo-50/30 via-blue-50/20 to-cyan-50/30',
-    headingColor: australiaTheme.headingColor || '#1e3a8a',
-    borderColor: australiaTheme.borderColor || '#a5b4fc',
-    accentColor: australiaTheme.accentColor || '#0ea5e9',
-    primaryGradientClass: australiaTheme.primaryGradientClass || 'from-indigo-600 to-blue-600',
-    secondaryGradientClass: australiaTheme.secondaryGradientClass || 'from-blue-500 to-cyan-500',
+    backgroundGradient: 'from-amber-50/30 via-orange-50/20 to-red-50/30',
+    headingColor: australiaTheme.headingColor || '#c2410c',
+    borderColor: australiaTheme.borderColor || '#fed7aa',
+    accentColor: australiaTheme.accentColor || '#ea580c',
+    primaryGradientClass: australiaTheme.primaryGradientClass || 'from-amber-600 to-orange-600',
+    secondaryGradientClass: australiaTheme.secondaryGradientClass || 'from-orange-500 to-red-500',
   };
 
   return (
@@ -99,9 +70,9 @@ const Australia = () => {
       <motion.div
         className="fixed inset-0 pointer-events-none z-0"
       >
-        <div className="absolute top-20 left-10 w-72 h-72 bg-gradient-to-br from-indigo-400/10 to-blue-500/10 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute top-1/3 right-20 w-96 h-96 bg-gradient-to-br from-blue-400/8 to-cyan-500/8 rounded-full blur-3xl animate-pulse delay-1000" />
-        <div className="absolute bottom-1/4 left-1/4 w-80 h-80 bg-gradient-to-br from-indigo-500/5 to-cyan-600/5 rounded-full blur-3xl animate-pulse delay-2000" />
+        <div className="absolute top-20 left-10 w-72 h-72 bg-gradient-to-br from-amber-400/10 to-orange-500/10 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute top-1/3 right-20 w-96 h-96 bg-gradient-to-br from-orange-400/8 to-red-500/8 rounded-full blur-3xl animate-pulse delay-1000" />
+        <div className="absolute bottom-1/4 left-1/4 w-80 h-80 bg-gradient-to-br from-amber-500/5 to-red-600/5 rounded-full blur-3xl animate-pulse delay-2000" />
       </motion.div>
 
       {/* Main Content */}
@@ -116,34 +87,33 @@ const Australia = () => {
           onDownloadPDF={handleDownloadPDF}
           onViewGallery={handleViewGallery}
           contactFormId="australia-contact-form"
-          tourSubtitle="10 Days / 9 Nights - Melbourne, Gold Coast & Sydney"
-          tourSubtitleColor={theme.accentColor}
+          tourTitle="10 Days / 9 Nights"
+          tourSubtitle="Melbourne, Gold Coast & Sydney"
+          tourSubtitleColor="#ea580c"
           short
         />
 
         {/* About Section */}
         <DestinationAbout
           title="About Australia"
-          subtitle="Experience the magic of Australia as you journey through Melbourne, Gold Coast, and Sydney. From the Great Ocean Road to the Sydney Opera House, discover a land of stunning beauty and unforgettable adventures."
+          subtitle="Experience the magic of Melbourne, Gold Coast & Sydney on an unforgettable Australian adventure."
           highlights={australiaHighlightsData}
           stats={australiaStats}
           theme={theme}
           onOpenModal={openModal}
         />
 
-        {/* Tabbed Content with Side-by-Side Contact Form */}
+        {/* Tabbed Content */}
         <section className="py-16">
           <div className="container mx-auto px-6">
             <DestinationTabbedContent
-              itinerary={itinerary}
-              inclusions={inclusions}
-              exclusions={exclusions}
-              faqs={faqs}
-              policies={policies}
+              itinerary={australiaItineraryData}
+              inclusions={australiaInclusionsData}
+              exclusions={australiaExclusionsData}
               theme={theme}
-              pageClass={theme.backgroundGradient}
-              contactFormId={`${theme.destinationId}-contact-form`}
               onOpenModal={openModal}
+              pageClass="from-amber-50/30 via-orange-50/20 to-red-50/30"
+              contactFormId={`${theme.destinationId}-contact-form`}
             />
           </div>
         </section>
@@ -155,19 +125,20 @@ const Australia = () => {
         isOpen={modalState.isOpen}
         onClose={closeModal}
         initialTab={modalState.tab}
-        faqs={faqs}
-        policies={policies}
+        faqs={australiaFAQs}
+        policies={australiaPolicies}
         theme={theme}
         destinationName={theme.destinationName}
         destinationId={theme.destinationId}
-        galleryImages={australiaDestinationData.galleryImages || []}
       />
 
       {/* Scroll Progress Indicator */}
-      <ScrollProgressAustralia />
+      <ScrollProgress color={theme.scrollProgress || "from-amber-600 via-orange-500 to-red-600"} height={3} />
     </motion.div>
   );
-};
+});
+
+Australia.displayName = 'Australia';
 
 export default Australia;
 

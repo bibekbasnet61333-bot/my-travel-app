@@ -10,6 +10,20 @@ const TABS = [
   { id: 'inclusions', label: 'Inclusions' }
 ];
 
+/**
+ * Unified DestinationTabbedContent component
+ * Supports different sidebar ratios via 'sidebarSize' prop
+ * 
+ * @param {Object} props
+ * @param {Array} props.itinerary - Itinerary data
+ * @param {Array} props.inclusions - Inclusions data
+ * @param {Array} props.exclusions - Exclusions data
+ * @param {Object} props.theme - Theme configuration
+ * @param {Function} props.onOpenModal - Modal open handler
+ * @param {string} props.pageClass - Background gradient class (default: 'from-stone-50/50 via-amber-50/30 to-slate-50/50')
+ * @param {string} props.contactFormId - Contact form ID
+ * @param {string} props.sidebarSize - Sidebar size: 'small' (1/4), 'medium' (1/3), 'large' (1/2) - default: 'small'
+ */
 const DestinationTabbedContent = ({
   itinerary,
   inclusions,
@@ -17,7 +31,8 @@ const DestinationTabbedContent = ({
   theme,
   onOpenModal,
   pageClass = 'from-stone-50/50 via-amber-50/30 to-slate-50/50',
-  contactFormId = 'contact-form'
+  contactFormId = 'contact-form',
+  sidebarSize = 'small'
 }) => {
   const [activeTab, setActiveTab] = useState('itinerary');
 
@@ -30,10 +45,26 @@ const DestinationTabbedContent = ({
     cardBorder: 'border-orange-100',
     tabActiveClass: 'bg-orange-500 text-white',
     tabInactiveClass: 'text-stone-600 hover:bg-orange-50',
-    destinationId: 'destination'
+    destinationId: 'destination',
+    destinationName: 'Your Destination'
   };
 
   const t = theme || defaultTheme;
+
+  // Determine grid columns based on sidebarSize
+  const getGridConfig = () => {
+    switch (sidebarSize) {
+      case 'large':
+        return { gridCols: 'lg:grid-cols-2', contentSpan: 'lg:col-span-1', sidebarSpan: 'lg:col-span-1' };
+      case 'medium':
+        return { gridCols: 'lg:grid-cols-3', contentSpan: 'lg:col-span-2', sidebarSpan: 'lg:col-span-1' };
+      case 'small':
+      default:
+        return { gridCols: 'lg:grid-cols-12', contentSpan: 'lg:col-span-8', sidebarSpan: 'lg:col-span-4' };
+    }
+  };
+
+  const { gridCols, contentSpan, sidebarSpan } = getGridConfig();
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -47,11 +78,11 @@ const DestinationTabbedContent = ({
   };
 
   const tabGradientStyle = parseGradientToStyle(t.primaryGradientClass);
-  const buttonGradientStyle = parseGradientToStyle(t.primaryGradientClass);
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-      <div className="lg:col-span-8">
+    <div className={`grid grid-cols-1 ${gridCols} gap-8 items-start`}>
+      {/* Left Side - Tab Content */}
+      <div className={contentSpan}>
         <motion.section
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -73,7 +104,7 @@ const DestinationTabbedContent = ({
                   backgroundImage: t.titleGradient || 'linear-gradient(to right, #b45309, #eab308)'
                 }}
               >
-                Explore Your Destination
+                Explore {t.destinationName !== 'Your Destination' ? `${t.destinationName} ` : ''}Your Destination
               </h2>
             </motion.div>
 
@@ -111,7 +142,8 @@ const DestinationTabbedContent = ({
         </motion.section>
       </div>
 
-      <div className="lg:col-span-4">
+      {/* Right Side - Contact Form */}
+      <div className={sidebarSpan}>
         <div className="lg:sticky lg:top-24">
           <DestinationContactForm
             destinationId={t.destinationId}
