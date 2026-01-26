@@ -1,4 +1,5 @@
 import { memo, useState, useEffect, useRef, useCallback } from 'react';
+import { colors } from '../../../constants/colors';
 
 // Constants for WhyChooseUs section - extracted for maintainability
 const PACKAGES_WHY_CHOOSE_US_POINTS = [
@@ -125,14 +126,14 @@ const AnimatedStat = memo(({ stat, index }) => {
     <div
       ref={elementRef}
       role="listitem"
-      className={`bg-white/5 border border-white/10 rounded-lg p-6 transition-all duration-500 ${
+      className={`bg-white rounded-lg p-6 shadow-sm border border-slate-200 transition-all duration-500 ${
         isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
       }`}
     >
-      <div className="text-3xl md:text-4xl font-bold mb-2 text-amber-400" aria-label={`${stat.label}: ${stat.value}`}>
+      <div className="text-3xl md:text-4xl font-bold mb-2" style={{ color: colors.primary[600] }} aria-label={`${stat.label}: ${stat.value}`}>
         {displayValue}
       </div>
-      <div className="text-sm md:text-base text-gray-300">
+      <div className="text-sm md:text-base text-slate-600">
         {stat.label}
       </div>
     </div>
@@ -144,23 +145,23 @@ AnimatedStat.displayName = 'AnimatedStat';
 const WhyChooseUsPackages = memo(() => {
   return (
     <section
-      className="py-16 px-4 bg-gradient-to-br from-slate-900 via-gray-900 to-gray-950 text-white relative overflow-hidden"
+      className="py-12 md:py-16 px-4 sm:px-6 bg-white"
       aria-labelledby="why-choose-us-title"
     >
-      <div className="max-w-7xl mx-auto relative z-10">
+      <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-12">
-          <h2 id="why-choose-us-title" className="text-3xl md:text-4xl font-bold mb-4">
+        <div className="text-center mb-10">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 text-slate-800">
             Why Choose Our Travel Packages
           </h2>
-          <p className="text-lg md:text-xl max-w-3xl mx-auto opacity-90">
+          <p className="text-slate-600 text-sm sm:text-base max-w-2xl mx-auto">
             Discover what makes our curated travel experiences stand out from the rest, delivering exceptional value and unforgettable memories.
           </p>
         </div>
 
         {/* Points Grid */}
         <div
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12"
           role="list"
           aria-label="Why choose us features"
         >
@@ -168,17 +169,17 @@ const WhyChooseUsPackages = memo(() => {
             <div
               key={index}
               role="listitem"
-              className="text-center p-6 rounded-lg bg-white/5 shadow-lg hover:bg-white/10 transition-all duration-300 border border-white/10"
+              className="text-center p-6 rounded-xl bg-slate-50 border border-slate-100 hover:shadow-md hover:border-slate-200 transition-all duration-300"
             >
-              <h3 className="text-xl font-semibold mb-3 text-white">{point.title}</h3>
-              <p className="text-gray-300 leading-relaxed">{point.description}</p>
+              <h3 className="text-lg font-semibold mb-3 text-slate-800">{point.title}</h3>
+              <p className="text-slate-600 leading-relaxed text-sm">{point.description}</p>
             </div>
           ))}
         </div>
 
         {/* Stats */}
         <div
-          className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center mb-12"
+          className="grid grid-cols-2 lg:grid-cols-4 gap-6 text-center mb-12"
           role="list"
           aria-label="Our statistics"
         >
@@ -188,27 +189,29 @@ const WhyChooseUsPackages = memo(() => {
         </div>
       </div>
 
-      {/* Preferred Airline Partners - Full Width */}
-      <div className="w-full py-8 px-8 bg-black/50">
-        <h3 className="text-xl md:text-2xl font-bold mb-6 text-white text-center">Preferred Airline Partners</h3>
-        <div
-          className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 w-full"
-          role="list"
-          aria-label="Airline partners"
-        >
-          {AIRLINE_PARTNERS.map((airline, index) => (
-            <div
-              key={index}
-              role="listitem"
-              className="rounded-lg p-4 border border-gray-700 transition-all duration-300 group bg-gray-900/50 hover:scale-105 hover:shadow-lg flex items-center justify-center"
-            >
-              {airline.fallback ? (
-                <span className="text-gray-400 text-sm font-medium text-center">{airline.fallback}</span>
-              ) : (
-                <span className="text-gray-400 text-sm font-medium text-center">{airline.name}</span>
-              )}
-            </div>
-          ))}
+      {/* Preferred Airline Partners */}
+      <div className="w-full py-8 bg-slate-50 border-t border-slate-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <h3 className="text-lg md:text-xl font-bold mb-6 text-slate-800 text-center">Preferred Airline Partners</h3>
+          <div
+            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4"
+            role="list"
+            aria-label="Airline partners"
+          >
+            {AIRLINE_PARTNERS.map((airline, index) => (
+              <div
+                key={index}
+                role="listitem"
+                className="rounded-lg p-4 border border-slate-200 bg-white transition-all duration-300 hover:shadow-md hover:scale-105 flex items-center justify-center"
+              >
+                {airline.fallback ? (
+                  <span className="text-slate-600 text-sm font-medium text-center">{airline.fallback}</span>
+                ) : (
+                  <span className="text-slate-600 text-sm font-medium text-center">{airline.name}</span>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

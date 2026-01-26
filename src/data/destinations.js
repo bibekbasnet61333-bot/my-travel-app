@@ -1,155 +1,169 @@
-export const destinations = [
-  // Local - Nepal
+// ============================================================================
+// SASA Travel - Destinations Data
+// Centralized data for all destination-related components
+// ============================================================================
+
+// Theme Colors (for reference across components)
+// Primary: #0f4c5c (Deep Teal)
+// Secondary: #0284c7 (Sky Blue)
+// Accent: #0ea5e9 (Bright Sky Blue)
+
+// ---------------------------------------------------------------------------
+// Nepal Destinations (Local) - Curated data for home page section
+// ---------------------------------------------------------------------------
+export const nepalDestinations = [
   {
-    id: "kathmandu",
-    name: "Kathmandu – Pokhara – Chitwan Tour",
-    country: "Nepal",
-    category: "local",
-    image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=1400&auto=format&fit=crop",
-    heroImage: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=2000&auto=format&fit=crop",
-    description: "Comprehensive tour covering Nepal's cultural capital, lakeside city, and wildlife sanctuary.",
-    longDescription: "Nestled within the verdant embrace of the Kathmandu Valley, this ancient metropolis emerges as a sublime tapestry of spiritual reverence and temporal wonder. A UNESCO World Heritage sanctuary where millennia-old traditions seamlessly intertwine with contemporary vitality, Kathmandu beckons discerning travelers to embark upon an odyssey of cultural enlightenment. From the sacred sanctuaries of Pashupatinath Temple, where the sacred Bagmati River bears witness to eternal rites, to the majestic Swayambhunath Stupa perched upon its verdant hilltop throne, each architectural marvel narrates an epic saga spanning centuries. The labyrinthine bazaars of Thamel pulse with an intoxicating alchemy of artisanal treasures and global gastronomy, while Durbar Square unveils the divine incarnation of the living goddess Kumari. Here, in this harmonious confluence of the divine and mortal realms, one discovers not merely a destination, but a profound journey of the soul.",
-    highlights: [
-      "UNESCO World Heritage sites including Swayambhunath, Pashupatinath, and Boudhanath",
-      "Ancient Durbar Squares with centuries-old palaces and temples",
-      "Vibrant local markets and traditional Newari cuisine",
-      "Living cultural traditions and festivals throughout the year",
-      "Gateway to Himalayan adventures and mountain flights"
-    ],
-    experiences: [
-      "Temple hopping through sacred sites",
-      "Street food tours in local neighborhoods",
-      "Traditional pottery and thangka painting workshops",
-      "Sunrise views from Nagarkot hilltop"
-    ],
-    // New data for enhanced page
-    atAGlance: {
-      location: "Kathmandu Valley, Nepal",
-      idealStay: "3-5 days",
-      bestTime: "October to December, March to May",
-      experienceType: "Cultural & Spiritual",
-      gateway: "Tribhuvan International Airport (KTM)"
+    id: 'everest-base-camp-trek',
+    name: 'Everest Base Camp',
+    country: 'Nepal',
+    category: 'local',
+    image: 'https://images.unsplash.com/photo-1519904981063-b0cf448d479e?q=80&w=800&auto=format&fit=crop',
+    heroImage: 'https://images.unsplash.com/photo-1519904981063-b0cf448d479e?q=80&w=2000&auto=format&fit=crop',
+    description: 'Himalayan Adventure',
+    duration: '14 Days / 13 Nights',
+    price: 'From $1,299',
+    atAGlance: { idealStay: '14 Days / 13 Nights' }
+  },
+  {
+    id: 'annapurna-base-camp-trek',
+    name: 'Annapurna Base Camp',
+    country: 'Nepal',
+    category: 'local',
+    image: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?q=80&w=800&auto=format&fit=crop',
+    heroImage: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?q=80&w=2000&auto=format&fit=crop',
+    description: 'Mountain Trekking',
+    duration: '12 Days / 11 Nights',
+    price: 'From $899',
+    atAGlance: { idealStay: '12 Days / 11 Nights' }
+  },
+  {
+    id: 'ghorepani-poon-hill-trek',
+    name: 'Ghorepani Poon Hill',
+    country: 'Nepal',
+    category: 'local',
+    image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=800&auto=format&fit=crop',
+    heroImage: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=2000&auto=format&fit=crop',
+    description: 'Scenic Trek',
+    duration: '5 Days / 4 Nights',
+    price: 'From $449',
+    atAGlance: { idealStay: '5 Days / 4 Nights' }
+  },
+  {
+    id: 'kathmandu-pokhara-chitwan',
+    name: 'Kathmandu Pokhara Chitwan',
+    country: 'Nepal',
+    category: 'local',
+    image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=800&auto=format&fit=crop',
+    heroImage: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=2000&auto=format&fit=crop',
+    description: 'Classic Nepal Tour',
+    duration: '7 Days / 6 Nights',
+    price: 'From $599',
+    atAGlance: { idealStay: '7 Days / 6 Nights' }
+  }
+];
+
+// ---------------------------------------------------------------------------
+// Combo Countries - Multi-country journey packages
+// ---------------------------------------------------------------------------
+export const comboCountriesData = {
+  europe: [
+    {
+      id: 'france-switzerland',
+      name: 'France & Switzerland',
+      image: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=800&q=80',
+      description: 'Experience the best of Paris and the Swiss Alps.',
+      duration: '10 Days / 9 Nights',
+      price: 'From $2,499',
+      category: 'combo'
     },
-    whyVisit: [
-      "Immerse in UNESCO World Heritage sites with over 2,000 years of history",
-      "Experience living Hindu and Buddhist traditions in daily life",
-      "Discover authentic Nepali culture through local markets and cuisine",
-      "Access gateway to Himalayan adventures and mountain flights"
-    ],
-    thingsToDo: [
-      {
-        category: "Culture & Heritage",
-        description: "Explore ancient temples, palaces, and living cultural traditions",
-        icon: "🏛️"
-      },
-      {
-        category: "Food & Local Life",
-        description: "Savor street food, visit markets, and experience local hospitality",
-        icon: "🍜"
-      },
-      {
-        category: "Spiritual Experiences",
-        description: "Visit sacred sites, join meditation sessions, and witness rituals",
-        icon: "🕉️"
-      },
-      {
-        category: "Day Trips & Short Adventures",
-        description: "Hike to viewpoints, visit nearby villages, and enjoy nature",
-        icon: "🏔️"
-      }
-    ],
-    experienceCategories: [
-      {
-        id: "cultural-heritage",
-        title: "Cultural Heritage Tours",
-        description: "Deep dive into Nepal's ancient history and traditions",
-        icon: "🏛️",
-        microcopy: "Perfect for history enthusiasts and culture lovers"
-      },
-      {
-        id: "spiritual-journeys",
-        title: "Spiritual Journeys",
-        description: "Connect with sacred sites and inner peace",
-        icon: "🕉️",
-        microcopy: "Ideal for seekers of mindfulness and tranquility"
-      },
-      {
-        id: "local-experiences",
-        title: "Local Life & Cuisine",
-        description: "Authentic experiences with locals and traditional food",
-        icon: "🍜",
-        microcopy: "Great for foodies and those wanting genuine connections"
-      },
-      {
-        id: "adventure-day-trips",
-        title: "Adventure Day Trips",
-        description: "Short adventures around the Kathmandu Valley",
-        icon: "🏔️",
-        microcopy: "Exciting for active travelers seeking quick thrills"
-      }
-    ],
-    quickFacts: [
-      { label: "UNESCO Sites", value: "7 World Heritage Sites" },
-      { label: "Temples", value: "Over 2,700 temples" },
-      { label: "Altitude", value: "1,400m above sea level" },
-      { label: "Population", value: "1.5+ million residents" }
-    ],
-    travelerTips: [
-      "Respect local customs and dress modestly at religious sites",
-      "Try momo, dal bhat, and other traditional Nepali dishes",
-      "Haggle politely at markets but be fair to vendors",
-      "Carry cash as card acceptance is limited in rural areas",
-      "Stay hydrated and use sunscreen due to high altitude sun"
-    ],
-    bestTimeDetails: {
-      title: "Best Time to Visit Kathmandu",
-      description: "Kathmandu offers year-round appeal, but the most comfortable seasons are autumn and spring.",
-      seasons: [
-        {
-          season: "Autumn (Sep-Dec)",
-          description: "Clear skies, festivals, mild weather (15-25°C)",
-          highlight: "Best for sightseeing and outdoor activities"
-        },
-        {
-          season: "Spring (Mar-May)",
-          description: "Blooming flowers, clear views, pleasant weather (15-25°C)",
-          highlight: "Perfect for hiking and cultural festivals"
-        }
-      ]
+    {
+      id: 'italy-austria',
+      name: 'Italy & Austria',
+      image: 'https://images.unsplash.com/photo-1467269204594-9661b134dd2b?w=800&q=80',
+      description: 'From Rome to Vienna, a journey through history.',
+      duration: '12 Days / 11 Nights',
+      price: 'From $2,799',
+      category: 'combo'
+    },
+    {
+      id: 'spain-portugal',
+      name: 'Spain & Portugal',
+      image: 'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=800&q=80',
+      description: 'Sun, culture, and cuisine across Iberia.',
+      duration: '9 Days / 8 Nights',
+      price: 'From $2,199',
+      category: 'combo'
     }
+  ],
+  asia: [
+    {
+      id: 'thailand-vietnam',
+      name: 'Thailand & Vietnam',
+      image: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=800&q=80',
+      description: 'Tropical adventures and vibrant cities.',
+      duration: '11 Days / 10 Nights',
+      price: 'From $1,899',
+      category: 'combo'
+    },
+    {
+      id: 'japan-south-korea',
+      name: 'Japan & South Korea',
+      image: 'https://images.unsplash.com/photo-1467269204594-9661b134dd2b?w=800&q=80',
+      description: 'Tradition meets technology in East Asia.',
+      duration: '13 Days / 12 Nights',
+      price: 'From $3,299',
+      category: 'combo'
+    },
+    {
+      id: 'singapore-malaysia',
+      name: 'Singapore & Malaysia',
+      image: 'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=800&q=80',
+      description: 'Modern cities and lush rainforests.',
+      duration: '8 Days / 7 Nights',
+      price: 'From $1,699',
+      category: 'combo'
+    }
+  ]
+};
+
+// ---------------------------------------------------------------------------
+// Hero Configuration - For DestinationsHero component
+// ---------------------------------------------------------------------------
+export const destinationsHeroConfig = {
+  local: {
+    images: [
+      'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=2000&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1544735716-392fe2489ffa?q=80&w=2000&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1548013146-72479768bada?q=80&w=2000&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1519904981063-b0cf448d479e?q=80&w=2000&auto=format&fit=crop',
+    ],
+    title: 'Nepal Destinations',
+    subtitle: 'Discover your next adventure in Nepal',
   },
-  {
-    id: "luxury-everest-base-camp-trek",
-    name: "Luxury Everest Base Camp Trek",
-    country: "Nepal",
-    category: "local",
-    image: "https://images.unsplash.com/photo-1519904981063-b0cf448d479e?q=80&w=1400&auto=format&fit=crop",
-    description: "Premium trekking experience to the base of Mount Everest with luxury accommodations.",
+  international: {
+    images: [
+      '/src/assets/bali.jpg',
+      '/src/assets/york.jpg',
+      '/src/assets/tokyo.jpg',
+      '/src/assets/paris_destination.jpg',
+    ],
+    title: 'International Destinations',
+    subtitle: 'Explore the world with us',
   },
-  {
-    id: "annapurna-base-camp-trek",
-    name: "12 Days Annapurna Base Camp",
-    country: "Nepal",
-    category: "local",
-    image: "https://images.unsplash.com/photo-1544735716-392fe2489ffa?q=80&w=1400&auto=format&fit=crop",
-    description: "Scenic trek through rhododendron forests and traditional villages to the Annapurna sanctuary with breathtaking mountain views.",
-  },
-  {
-    id: "ghorepani-poon-hill-trek",
-    name: "Ghorepani Poon Hill Trek",
-    country: "Nepal",
-    category: "local",
-    image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=1400&auto=format&fit=crop",
-    description: "Scenic trek offering panoramic views of the Annapurna and Dhaulagiri ranges.",
-  },
-  {
-    id: "everest-base-camp-trek",
-    name: "Everest Base Camp Trek",
-    country: "Nepal",
-    category: "local",
-    image: "https://images.unsplash.com/photo-1519904981063-b0cf448d479e?q=80&w=1400&auto=format&fit=crop",
-    description: "Classic trek to Everest Base Camp, witnessing the world's highest peaks.",
-  },
+  combo: {
+    images: [
+      'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=2000&q=80',
+      'https://images.unsplash.com/photo-1467269204594-9661b134dd2b?w=2000&q=80',
+    ],
+    title: 'Combo Countries',
+    subtitle: 'Curated multi-country journeys',
+  }
+};
+
+// ---------------------------------------------------------------------------
+// All Destinations (Database)
+// ---------------------------------------------------------------------------
+export const destinations = [
   // International
   {
     id: "thailand",
@@ -672,14 +686,6 @@ export const destinations = [
     ]
   },
   {
-    id: "schengen-countries",
-    name: "Schengen Countries",
-    country: "Europe",
-    category: "international",
-    image: "https://images.unsplash.com/photo-1467269204594-9661b134dd2b?q=80&w=1400&auto=format&fit=crop",
-    description: "Multiple European countries with diverse cultures, history, and landscapes.",
-  },
-{
     id: "turkey",
     name: "Turkey",
     country: "Turkey",

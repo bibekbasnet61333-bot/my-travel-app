@@ -1,139 +1,83 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useEffect } from 'react';
+import PropTypes from 'prop-types';
 
-/**
- * FloatingElement - Performance optimized floating animation component
- * Uses CSS-based animations instead of JavaScript scroll tracking
- * to eliminate the continuous requestAnimationFrame loop issue
- */
 const FloatingElement = ({
   children,
-  className = '',
-  intensity = 1,
+  intensity = 0.2,
   speed = 1,
-  delay = 0,
   direction = 'both',
-  trigger = 'scroll',
-  range = 20,
-  childrenClassName = ''
+  range = 10,
+  delay = 0
 }) => {
   const elementRef = useRef(null);
-  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     const element = elementRef.current;
-    if (!element || trigger === 'always') return;
+    if (!element) return;
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          if (trigger === 'scroll') {
-            observer.unobserve(element);
-          }
-        }
-      },
-      { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
-    );
+    let animationFrameId;
+    let startTime = Date.now() + delay;
+    let initialTransform = { x: 0, y: 0, rotate: 0 };
 
-    observer.observe(element);
-    return () => observer.disconnect();
-  }, [trigger]);
+    // Get initial position
+    const computedStyle = window.getComputedStyle(element);
+    const matrix = new DOMMatrix(computedStyle.transform);
+    initialTransform = {
+      x: matrix.m41,
+      y: matrix.m42
+    };
 
-  // Calculate CSS animation parameters based on props
-  const getAnimationName = () => {
-    const floatX = direction === 'x' || direction === 'both';
-    const floatY = direction === 'y' || direction === 'both';
-    const rotate = direction === 'rotate';
+    const animate = () => {
+      const elapsed = (Date.now() - startTime) / 1000;
+      const adjustedSpeed = speed * 0.5;
 
-    if (rotate) return 'floatRotate';
-    if (floatX && floatY) return 'floatBoth';
-    if (floatX) return 'floatX';
-    if (floatY) return 'floatY';
-    return 'floatBoth';
-  };
+      let transformX = initialTransform.x;
+      let transformY = initialTransform.y;
+      let rotate = 0;
 
-  // Calculate animation duration based on speed prop
-  const animationDuration = `${4 / Math.max(speed, 0.1)}s`;
+      if (direction === 'both' || direction === 'x') {
+        transformX = initialTransform.x + Math.sin(elapsed * adjustedSpeed) * range;
+      }
+      if (direction === 'both' || direction === 'y') {
+        transformY = initialTransform.y + Math.sin(elapsed * adjustedSpeed * 0.7 + 1) * range;
+      }
+      if (direction === 'rotate') {
+        rotate = Math.sin(elapsed * adjustedSpeed) * range * 2;
+      }
 
-  // Calculate translate range based on intensity and range props
-  const translateRange = range * intensity;
+      const scale = 1 + Math.sin(elapsed * adjustedSpeed * 0.5) * intensity * 0.1;
 
-  // Generate custom CSS for this instance
-  const baseStyle = {
-    '--float-range': `${translateRange}px`,
-    '--float-duration': animationDuration,
-    '--float-delay': `${delay}ms`,
-  };
+      element.style.transform = `translate(${transformX}px, ${transformY}px) rotate(${rotate}deg) scale(${scale})`;
 
-  const animationStyle = {
-    ...baseStyle,
-    opacity: isVisible ? 1 : 0,
-    transform: 'translate3d(0,0,0)', // Force hardware acceleration
-    animationName: getAnimationName(),
-    animationDuration: animationDuration,
-    animationDelay: `${delay}ms`,
-    animationIterationCount: 'infinite',
-    animationTimingFunction: 'ease-in-out',
-  };
+      animationFrameId = requestAnimationFrame(animate);
+    };
+
+    animate();
+
+    return () => {
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
+    };
+  }, [intensity, speed, direction, range, delay]);
 
   return (
     <div
       ref={elementRef}
-      className={`floating-element ${className}`}
-      style={animationStyle}
+      style={{ willChange: 'transform' }}
     >
-      <style>{`
-        .floating-element {
-          will-change: transform, opacity;
-        }
-        
-        @keyframes floatBoth {
-          0%, 100% {
-            transform: translate(0, 0);
-          }
-          25% {
-            transform: translate(var(--float-range), calc(var(--float-range) * -0.5));
-          }
-          50% {
-            transform: translate(calc(var(--float-range) * -0.5), var(--float-range));
-          }
-          75% {
-            transform: translate(var(--float-range), calc(var(--float-range) * 0.5));
-          }
-        }
-        
-        @keyframes floatX {
-          0%, 100% {
-            transform: translateX(0);
-          }
-          50% {
-            transform: translateX(var(--float-range));
-          }
-        }
-        
-        @keyframes floatY {
-          0%, 100% {
-            transform: translateY(0);
-          }
-          50% {
-            transform: translateY(calc(var(--float-range) * -1));
-          }
-        }
-        
-        @keyframes floatRotate {
-          0%, 100% {
-            transform: rotate(0deg);
-          }
-          50% {
-            transform: rotate(var(--float-range, 15deg));
-          }
-        }
-      `}</style>
-      <div className={childrenClassName}>
-        {children}
-      </div>
+      {children}
     </div>
   );
+};
+
+FloatingElement.propTypes = {
+  children: PropTypes.node.isRequired,
+  intensity: PropTypes.number,
+  speed: PropTypes.number,
+  direction: PropTypes.oneOf(['both', 'x', 'y', 'rotate']),
+  range: PropTypes.number,
+  delay: PropTypes.number
 };
 
 export default FloatingElement;

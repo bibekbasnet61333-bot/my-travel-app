@@ -2,6 +2,7 @@ import { memo, useState, useRef, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { HighlightedText } from '../../../utils/searchUtils';
+import { colors } from '../../../constants/colors';
 
 // SVG placeholder as data URL for reliable fallback
 const PLACEHOLDER_IMAGE = `data:image/svg+xml,${encodeURIComponent(`
@@ -12,6 +13,20 @@ const PLACEHOLDER_IMAGE = `data:image/svg+xml,${encodeURIComponent(`
     <text fill="#6b7280" font-family="system-ui" font-size="14" text-anchor="middle" y="260">Travel Package</text>
   </svg>
 `)}`;
+
+// Difficulty badge color mapping
+const getDifficultyColor = (difficulty) => {
+  switch (difficulty) {
+    case 'Easy':
+      return colors.success[500];
+    case 'Moderate':
+      return colors.warning[500];
+    case 'Challenging':
+      return colors.error[500];
+    default:
+      return colors.neutral[500];
+  }
+};
 
 function PackageCard({ packageData, searchQuery = '' }) {
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -27,16 +42,18 @@ function PackageCard({ packageData, searchQuery = '' }) {
     setImageLoaded(true);
   }, []);
 
+  const difficultyColor = getDifficultyColor(packageData.difficulty);
+
   return (
     <Link
       to={`/packages/${packageData.id}`}
       aria-label={`View details for ${packageData.name}`}
-      className="group block bg-black rounded-2xl shadow-soft hover:shadow-medium transition-all duration-300 overflow-hidden transform hover:-translate-y-2"
+      className="group block bg-white rounded-xl shadow-sm border border-slate-200 hover:shadow-lg hover:border-slate-300 transition-all duration-300 overflow-hidden transform hover:-translate-y-1"
     >
       {/* Image */}
-      <div className="relative h-48 overflow-hidden bg-black">
+      <div className="relative h-48 overflow-hidden bg-slate-100">
         {!imageLoaded && (
-          <div className="absolute inset-0 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 animate-pulse" />
+          <div className={`absolute inset-0 bg-gradient-to-r ${colors.neutral[700]} via-${colors.neutral[600]} to-${colors.neutral[700]} animate-pulse`} />
         )}
         <img
           ref={imgRef}
@@ -45,46 +62,46 @@ function PackageCard({ packageData, searchQuery = '' }) {
           loading="lazy"
           onLoad={handleImageLoad}
           onError={handleImageError}
-          className={`w-full h-full object-cover group-hover:scale-110 transition-transform duration-300 ${
+          className={`w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ${
             imageLoaded ? 'opacity-100' : 'opacity-0'
           }`}
           aria-hidden="true"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-        <div className="absolute top-4 left-4">
-          <span className="px-3 py-1 bg-white/90 backdrop-blur-sm text-gray-800 text-sm font-semibold rounded-full capitalize">
+        <div className="absolute top-3 left-3">
+          <span className="px-2.5 py-1 bg-white/95 backdrop-blur-sm text-slate-700 text-xs font-semibold rounded-full capitalize shadow-sm">
             {packageData.category}
           </span>
         </div>
-        <div className="absolute top-4 right-4">
-          <span className={`px-3 py-1 text-white text-sm font-semibold rounded-full ${
-            packageData.difficulty === 'Easy' ? 'bg-green-500' :
-            packageData.difficulty === 'Moderate' ? 'bg-yellow-500' : 'bg-red-500'
-          }`}>
+        <div className="absolute top-3 right-3">
+          <span
+            className="px-2.5 py-1 text-white text-xs font-semibold rounded-full shadow-sm"
+            style={{ backgroundColor: difficultyColor }}
+          >
             {packageData.difficulty}
           </span>
         </div>
       </div>
 
       {/* Content */}
-      <div className="p-6 bg-black">
-        <h3 className="text-xl font-bold text-white mb-2 line-clamp-2 group-hover:text-indigo-300 transition-colors">
+      <div className="p-5 bg-white">
+        <h3 className="text-lg font-bold text-slate-800 mb-2 line-clamp-2 group-hover:text-primary-600 transition-colors">
           <HighlightedText text={packageData.name} query={searchQuery} />
         </h3>
-        <p className="text-gray-300 text-sm mb-4 line-clamp-2">
+        <p className="text-slate-600 text-sm mb-4 line-clamp-2">
           <HighlightedText text={packageData.shortDescription} query={searchQuery} />
         </p>
 
         {/* Details */}
         <div className="space-y-2 mb-4">
-          <div className="flex items-center text-sm text-gray-400">
-            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <div className="flex items-center text-sm text-slate-500">
+            <svg className="w-4 h-4 mr-2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             <span>{packageData.duration}</span>
           </div>
-          <div className="flex items-center text-sm text-gray-400">
-            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <div className="flex items-center text-sm text-slate-500">
+            <svg className="w-4 h-4 mr-2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
             </svg>
             <span>{packageData.groupSize}</span>
@@ -92,11 +109,11 @@ function PackageCard({ packageData, searchQuery = '' }) {
         </div>
 
         {/* CTA */}
-        <div className="flex items-center justify-between pt-4 border-t border-gray-800">
-          <span className="text-sm text-gray-400 group-hover:text-indigo-300 transition-colors">
+        <div className="flex items-center justify-between pt-4 border-t border-slate-100">
+          <span className="text-sm font-medium text-slate-600 group-hover:text-primary-600 transition-colors">
             View Details
           </span>
-          <svg className="w-5 h-5 text-gray-400 group-hover:text-indigo-300 transition-colors transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-5 h-5 text-slate-400 group-hover:text-primary-500 transition-colors transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
         </div>

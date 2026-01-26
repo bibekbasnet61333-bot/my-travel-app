@@ -1,8 +1,8 @@
-import React, { memo, useState, useEffect, useCallback } from 'react';
+import { memo, useState, useEffect, useCallback } from 'react';
 import AnimatedText from '../../../components/animations/AnimatedText';
 import FloatingElement from '../../../components/animations/FloatingElement';
-import ParticleBackground from '../../../components/animations/ParticleBackground';
 import { testimonials } from '../../../data/home/testimonials';
+import { colors } from '../../../constants/colors';
 
 const TestimonialsSection = memo(() => {
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
@@ -20,28 +20,29 @@ const TestimonialsSection = memo(() => {
   }, []);
 
   return (
-    <section className="relative py-12 sm:py-16 px-4 sm:px-6 bg-gradient-to-b from-gray-900/30 to-black/30">
-      <ParticleBackground
-        particleCount={7}
-        color="rgba(0, 0, 0, 0.8)"
-        size={3}
-        speed={0.3}
-        interactive={true}
-      />
+    <section
+      className="relative py-10 sm:py-14 px-3 sm:px-6"
+      style={{ background: colors.sections.testimonials }}
+    >
       <div className="max-w-5xl mx-auto relative z-10">
-        <AnimatedText
-          text="What Our Travelers Say"
-          className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-center mb-4 text-white drop-shadow-lg block"
-          type="slideUp"
-          delay={200}
-        />
-
-        <AnimatedText
-          text="Real stories from real adventures"
-          className="text-base sm:text-lg md:text-xl text-center text-gray-200 mb-8 sm:mb-10 font-medium block drop-shadow-md"
-          type="fadeIn"
-          delay={400}
-        />
+        <div>
+          <AnimatedText
+            text="What Our Travelers Say"
+            className="text-2xl sm:text-4xl md:text-5xl font-bold mb-2 sm:mb-3 text-center"
+            style={{ color: colors.accent[700] }}
+            type="slideUp"
+            delay={200}
+          />
+        </div>
+        <div>
+          <AnimatedText
+            text="Real stories from real adventures"
+            className="text-base sm:text-lg md:text-xl text-center mb-6 sm:mb-8 font-medium"
+            style={{ color: colors.accent[900] }}
+            type="fadeIn"
+            delay={400}
+          />
+        </div>
 
         <div className="relative">
           <div className="overflow-hidden">
@@ -58,13 +59,22 @@ const TestimonialsSection = memo(() => {
                     range={8}
                     delay={200}
                   >
-                    <div className="bg-gradient-to-br from-gray-800/60 to-gray-900/60 backdrop-blur-lg rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 max-w-3xl mx-auto border border-white/5">
+                    <div
+                      className="backdrop-blur-lg rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 max-w-3xl mx-auto border"
+                      style={{
+                        background: `linear-gradient(135deg, ${colors.neutral[100]}, ${colors.neutral[50]})`,
+                        borderColor: colors.neutral[200],
+                      }}
+                    >
                       <div className="flex flex-col md:flex-row items-center gap-4 sm:gap-6">
                         <div className="flex-shrink-0">
                           <img
                             src={imageErrors[testimonial.name] ? 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=100&auto=format&fit=crop&fm=webp' : testimonial.image}
                             alt={testimonial.name}
-                            className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-full object-cover border-2 sm:border-3 border-gradient-to-r from-blue-500 to-purple-500"
+                            className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-full object-cover border-2 sm:border-3"
+                            style={{
+                              borderImage: `linear-gradient(90deg, ${colors.accent[700]}, ${colors.accent[200]}) 1`,
+                            }}
                             loading="lazy"
                             decoding="async"
                             onError={() => setImageErrors(prev => ({ ...prev, [testimonial.name]: true }))}
@@ -74,18 +84,21 @@ const TestimonialsSection = memo(() => {
                         <div className="flex-1 text-center md:text-left">
                           <div className="flex justify-center md:justify-start mb-2 sm:mb-3">
                             {[...Array(testimonial.rating)].map((_, i) => (
-                              <span key={i} className="text-yellow-400 text-sm sm:text-lg">★</span>
+                              <span key={i} style={{ color: colors.accent[400] }} className="text-sm sm:text-lg">★</span>
                             ))}
                           </div>
 
-                          <blockquote className="text-xs sm:text-sm md:text-base text-gray-100 mb-3 sm:mb-4 italic leading-relaxed font-medium drop-shadow-sm">
+                          <blockquote
+                            className="text-xs sm:text-sm md:text-base mb-3 sm:mb-4 italic leading-relaxed font-medium drop-shadow-sm"
+                            style={{ color: colors.neutral[700] }}
+                          >
                             "{testimonial.text}"
                           </blockquote>
 
                           <div>
-                            <div className="font-bold text-white text-sm sm:text-base">{testimonial.name}</div>
-                            <div className="text-gray-300 text-xs sm:text-sm font-medium">{testimonial.location}</div>
-                            <div className="text-blue-400 text-[10px] sm:text-xs mt-0.5 sm:mt-1 font-medium">{testimonial.trip}</div>
+                            <div className="font-bold text-sm sm:text-base" style={{ color: colors.neutral[900] }}>{testimonial.name}</div>
+                            <div className="text-xs sm:text-sm font-medium" style={{ color: colors.neutral[500] }}>{testimonial.location}</div>
+                            <div className="text-[10px] sm:text-xs mt-0.5 sm:mt-1 font-medium" style={{ color: colors.accent[700] }}>{testimonial.trip}</div>
                           </div>
                         </div>
                       </div>
@@ -101,11 +114,12 @@ const TestimonialsSection = memo(() => {
               <button
                 key={index}
                 onClick={() => handleTestimonialChange(index)}
-                className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                className={`w-2 h-2 rounded-full transition-all duration-300`}
+                style={
                   index === currentTestimonial
-                    ? 'bg-gradient-to-r from-blue-500 to-purple-500 scale-125'
-                    : 'bg-gray-400 hover:bg-gray-500'
-                }`}
+                    ? { background: `linear-gradient(90deg, ${colors.accent[700]}, ${colors.accent[200]})`, transform: 'scale(1.25)' }
+                    : { background: colors.neutral[400] }
+                }
               />
             ))}
           </div>

@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { usePackages } from '../components/packages/hooks';
 import { CONTACT_PHONES, CONTACT_EMAILS } from '../constants';
+import { colors } from '../constants/colors';
 import ErrorBoundary from '../components/ui/ErrorBoundary';
 
 // Inner component wrapped in ErrorBoundary
@@ -20,8 +21,8 @@ function PackageDetailContent() {
   // Handle loading state
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-black">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2" style={{ borderColor: colors.primary[600] }}></div>
       </div>
     );
   }
@@ -29,16 +30,19 @@ function PackageDetailContent() {
   // Handle error state
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="bg-red-50 border border-red-200 rounded-lg p-8 max-w-md mx-auto text-center">
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <div className="bg-white border border-red-200 rounded-xl p-8 max-w-md mx-auto text-center shadow-sm">
           <svg className="w-16 h-16 text-red-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
           </svg>
-          <h2 className="text-xl font-semibold text-red-800 mb-2">Unable to Load Package</h2>
-          <p className="text-red-600 mb-4">{error.message || 'An error occurred while loading the package details.'}</p>
+          <h2 className="text-xl font-semibold text-slate-800 mb-2">Unable to Load Package</h2>
+          <p className="text-slate-600 mb-4">{error.message || 'An error occurred while loading the package details.'}</p>
           <Link
             to="/packages"
-            className="inline-block bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition-colors"
+            className="inline-block px-6 py-2.5 rounded-lg font-medium transition-colors"
+            style={{ backgroundColor: colors.error[500], color: 'white' }}
+            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.error[600]}
+            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.error[500]}
           >
             Back to Packages
           </Link>
@@ -50,16 +54,19 @@ function PackageDetailContent() {
   // Handle package not found
   if (!pkg) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-8 max-w-md mx-auto text-center">
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <div className="bg-white border border-yellow-200 rounded-xl p-8 max-w-md mx-auto text-center shadow-sm">
           <svg className="w-16 h-16 text-yellow-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6-4h6m2 5.291A7.962 7.962 0 0112 15c-2.34 0-4.29-.966-5.5-2.5M12 7v.01" />
           </svg>
-          <h2 className="text-xl font-semibold text-yellow-800 mb-2">Package Not Found</h2>
-          <p className="text-yellow-600 mb-4">The package you're looking for doesn't exist or may have been removed.</p>
+          <h2 className="text-xl font-semibold text-slate-800 mb-2">Package Not Found</h2>
+          <p className="text-slate-600 mb-4">The package you're looking for doesn't exist or may have been removed.</p>
           <Link
             to="/packages"
-            className="inline-block bg-yellow-600 text-white px-6 py-2 rounded-lg hover:bg-yellow-700 transition-colors"
+            className="inline-block px-6 py-2.5 rounded-lg font-medium transition-colors"
+            style={{ backgroundColor: colors.warning[500], color: 'white' }}
+            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.warning[600]}
+            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.warning[500]}
           >
             Browse All Packages
           </Link>
@@ -392,16 +399,19 @@ function PackageDetail() {
   return (
     <ErrorBoundary
       fallback={
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="bg-red-50 border border-red-200 rounded-lg p-8 max-w-md mx-auto text-center">
-            <svg className="w-16 h-16 text-red-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="min-h-screen flex items-center justify-center bg-slate-50">
+          <div className="bg-white border border-red-200 rounded-xl p-8 max-w-md mx-auto text-center shadow-sm">
+            <svg className="w-16 h-16 mx-auto mb-4" style={{ color: colors.error[500] }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
             </svg>
-            <h2 className="text-xl font-semibold text-red-800 mb-2">Something went wrong</h2>
-            <p className="text-red-600 mb-4">An unexpected error occurred. Please try again.</p>
+            <h2 className="text-xl font-semibold text-slate-800 mb-2">Something went wrong</h2>
+            <p className="text-slate-600 mb-4">An unexpected error occurred. Please try again.</p>
             <Link
               to="/packages"
-              className="inline-block bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition-colors"
+              className="inline-block px-6 py-2.5 rounded-lg font-medium transition-colors"
+              style={{ backgroundColor: colors.error[500], color: 'white' }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.error[600]}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.error[500]}
             >
               Back to Packages
             </Link>

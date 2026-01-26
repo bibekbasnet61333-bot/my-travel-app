@@ -1,87 +1,41 @@
-
-import React, { memo } from 'react';
+import { memo, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import AnimatedText from '../../../components/animations/AnimatedText';
 import FloatingElement from '../../../components/animations/FloatingElement';
-import ParticleBackground from '../../../components/animations/ParticleBackground';
-import { destinations } from '../../../data/destinations';
+import { destinations, nepalDestinations } from '../../../data/destinations';
 
-// Nepal destinations data with 4 curated destinations
-const nepalDestinations = [
-  {
-    id: 'everest-base-camp-trek',
-    name: 'Everest Base Camp',
-    country: 'Nepal',
-    category: 'local',
-    image: 'https://images.unsplash.com/photo-1519904981063-b0cf448d479e?q=80&w=800&auto=format&fit=crop',
-    description: 'Himalayan Adventure',
-    duration: '14 Days / 13 Nights',
-    price: 'From $1,299'
-  },
-  {
-    id: 'annapurna-base-camp-trek',
-    name: 'Annapurna Base Camp',
-    country: 'Nepal',
-    category: 'local',
-    image: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?q=80&w=800&auto=format&fit=crop',
-    description: 'Mountain Trekking',
-    duration: '12 Days / 11 Nights',
-    price: 'From $899'
-  },
-  {
-    id: 'ghorepani-poon-hill-trek',
-    name: 'Ghorepani Poon Hill',
-    country: 'Nepal',
-    category: 'local',
-    image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=800&auto=format&fit=crop',
-    description: 'Scenic Trek',
-    duration: '5 Days / 4 Nights',
-    price: 'From $449'
-  },
-  {
-    id: 'kathmandu-pokhara-chitwan',
-    name: 'Kathmandu Pokhara Chitwan',
-    country: 'Nepal',
-    category: 'local',
-    image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=800&auto=format&fit=crop',
-    description: 'Classic Nepal Tour',
-    duration: '7 Days / 6 Nights',
-    price: 'From $599'
-  }
-];
-
-// International destinations
-const internationalDestinations = destinations.filter(d => d.category === 'international').slice(0, 6).map(d => ({
-  ...d,
-  duration: d.atAGlance?.idealStay || d.description?.match(/\d+\s*(Days|Nights)/)?.[0] || '7 Days / 6 Nights'
-}));
-
+/**
+ * DestinationsSection - Home page destinations display
+ * Shows Nepal and International destinations with category filtering
+ * Uses centralized data and memoized filtering for performance
+ */
 const DestinationsSection = memo(() => {
-  const [activeCategory, setActiveCategory] = React.useState('nepal');
+  const [activeCategory, setActiveCategory] = useState('nepal');
 
-  const getFilteredDestinations = () => {
+  // Memoized international destinations from centralized data
+  const internationalDestinations = useMemo(() => {
+    return destinations
+      .filter(d => d.category === 'international')
+      .slice(0, 6)
+      .map(d => ({
+        ...d,
+        duration: d.atAGlance?.idealStay || d.description?.match(/\d+\s*(Days|Nights)/)?.[0] || '7 Days / 6 Nights'
+      }));
+  }, []);
+
+  const filteredDestinations = useMemo(() => {
     if (activeCategory === 'nepal') {
       return nepalDestinations;
     }
     return internationalDestinations;
-  };
-
-  const filteredDestinations = getFilteredDestinations();
+  }, [activeCategory, internationalDestinations]);
 
   return (
-    <section id="gallery" className="relative py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-900/30 to-black/30">
-      <ParticleBackground
-        particleCount={7}
-        color="rgba(0, 0, 0, 0.8)"
-        size={3}
-        speed={0.3}
-        interactive={true}
-      />
-
+    <section className="relative py-10 sm:py-14 px-3 sm:px-6 bg-gradient-to-b from-slate-100 via-blue-50 to-emerald-50">
       <div className="max-w-7xl mx-auto relative z-10">
         <AnimatedText
           text="Explore Destinations"
-          className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-center mb-8 text-white drop-shadow-lg block"
+          className="text-2xl sm:text-4xl md:text-5xl font-bold text-center block w-full mb-6 text-[#0f4c5c]"
           type="slideUp"
           delay={200}
         />

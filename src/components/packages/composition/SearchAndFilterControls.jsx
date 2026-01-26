@@ -1,5 +1,6 @@
 import { memo } from 'react';
 import PropTypes from 'prop-types';
+import { colors } from '../../../constants/colors';
 
 const SearchAndFilterControls = memo(function SearchAndFilterControls({
   searchQuery,
@@ -9,12 +10,18 @@ const SearchAndFilterControls = memo(function SearchAndFilterControls({
   onClearSearch
 }) {
   return (
-    <div className="bg-white/5 backdrop-blur-sm rounded-3xl p-8 border border-white/10 mb-12">
+    <div
+      className="rounded-2xl p-5 sm:p-6 mb-8 sm:mb-10 border"
+      style={{
+        backgroundColor: colors.surface.light,
+        borderColor: colors.neutral[200],
+      }}
+    >
       {/* Search Bar */}
-      <div className="flex flex-col md:flex-row gap-6 items-center">
-        <div className="relative flex-1">
+      <div className="flex flex-col md:flex-row gap-4 items-center">
+        <div className="relative flex-1 w-full">
           <svg
-            className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
+            className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -28,13 +35,13 @@ const SearchAndFilterControls = memo(function SearchAndFilterControls({
             value={searchQuery}
             onChange={onSearchChange}
             aria-label="Search travel packages"
-            className="w-full pl-12 pr-4 py-4 bg-white/10 border border-white/20 rounded-2xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent backdrop-blur-sm transition-all duration-300"
+            className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base shadow-sm"
           />
         </div>
         {onClearSearch && searchQuery && (
           <button
             onClick={onClearSearch}
-            className="px-4 py-2 text-sm text-gray-300 hover:text-white transition-colors"
+            className="px-4 py-2.5 text-sm font-medium rounded-lg bg-slate-100 text-slate-600 hover:bg-primary-50 hover:text-primary-700 border border-slate-200 transition-colors whitespace-nowrap"
             aria-label="Clear search"
           >
             Clear
@@ -43,12 +50,12 @@ const SearchAndFilterControls = memo(function SearchAndFilterControls({
       </div>
 
       {/* Results Count */}
-      <div className="mt-6 text-center">
-        <span className="text-gray-300">
-          Showing <span className="text-indigo-400 font-semibold">{filteredCount}</span> of <span className="text-purple-400 font-semibold">{totalPackages}</span> packages
+      <div className="mt-4 text-center">
+        <span className="text-slate-600 text-sm sm:text-base font-medium">
+          Showing <span className="text-primary-600 font-bold">{filteredCount}</span> of <span className="text-slate-700 font-bold">{totalPackages}</span> packages
           {searchQuery && (
-            <span className="ml-3 text-gray-300">
-              for "<span className="text-white font-medium">{searchQuery}</span>"
+            <span className="ml-2 text-slate-600">
+              for <span className="text-primary-700 font-semibold">"{searchQuery}"</span>
             </span>
           )}
         </span>

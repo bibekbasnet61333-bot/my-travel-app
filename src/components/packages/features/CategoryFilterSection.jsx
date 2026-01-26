@@ -2,6 +2,7 @@ import { useState, useMemo, memo } from 'react';
 import PropTypes from 'prop-types';
 import { packageCategories, packages } from '../../../data/packages';
 import { PackageGrid } from '../index';
+import { colors } from '../../../constants/colors';
 
 const CategoryFilterSection = memo(function CategoryFilterSection({ selectedCategory, onCategoryChange }) {
   const [hoveredCategory, setHoveredCategory] = useState(null);
@@ -15,38 +16,48 @@ const CategoryFilterSection = memo(function CategoryFilterSection({ selectedCate
   }, [selectedCategory]);
 
   return (
-    <section className="py-8 bg-black" aria-label="Category filters">
-      <div className="max-w-6xl mx-auto px-4">
+    <section className="py-8 px-4 sm:px-6" aria-label="Category filters">
+      <div className="max-w-7xl mx-auto">
         {/* Category Filter Buttons */}
-        <div className="flex overflow-x-auto gap-3 pb-2 -mx-2 px-2 mb-8 scrollbar-hide" role="tablist" aria-label="Package categories">
-          {packageCategories.map((category) => (
-            <button
-              key={category.id}
-              onClick={() => onCategoryChange(category.id)}
-              onMouseEnter={() => setHoveredCategory(category.id)}
-              onMouseLeave={() => setHoveredCategory(null)}
-              role="tab"
-              aria-selected={selectedCategory === category.id}
-              aria-label={`${category.name} (${category.count} packages)`}
-              className={`relative flex-shrink-0 px-5 py-3 rounded-full font-semibold text-sm transition-all duration-300 transform hover:scale-105 ${
-                selectedCategory === category.id
-                  ? 'bg-gradient-to-r from-amber-700 to-orange-800 text-white shadow-xl'
-                  : 'bg-gray-800 text-gray-300 border border-gray-600 hover:border-amber-500 hover:shadow-lg hover:text-white'
-              }`}
-            >
-              <span className="relative z-10">
-                {category.name}
-                <span className="ml-1 text-xs opacity-75">
-                  ({category.count})
+        <div
+          className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-8"
+          role="tablist"
+          aria-label="Package categories"
+        >
+          {packageCategories.map((category) => {
+            const isActive = selectedCategory === category.id;
+            return (
+              <button
+                key={category.id}
+                onClick={() => onCategoryChange(category.id)}
+                onMouseEnter={() => setHoveredCategory(category.id)}
+                onMouseLeave={() => setHoveredCategory(null)}
+                role="tab"
+                aria-selected={isActive}
+                aria-label={`${category.name} (${category.count} packages)`}
+                className={`relative flex-shrink-0 px-4 sm:px-5 py-2.5 rounded-full font-semibold text-xs sm:text-sm transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 border ${
+                  isActive
+                    ? 'text-white shadow-sm'
+                    : 'text-slate-600 border-slate-200 bg-white hover:bg-slate-50 hover:border-slate-300'
+                }`}
+                style={
+                  isActive
+                    ? {
+                        background: `linear-gradient(135deg, ${colors.primary[600]}, ${colors.primary[700]})`,
+                        borderColor: colors.primary[700],
+                      }
+                    : {}
+                }
+              >
+                <span className="relative z-10 flex items-center gap-1.5">
+                  {category.name}
+                  <span className="text-[10px] sm:text-xs opacity-80">
+                    ({category.count})
+                  </span>
                 </span>
-              </span>
-
-              {/* Hover effect background */}
-              {hoveredCategory === category.id && selectedCategory !== category.id && (
-                <div className="absolute inset-0 bg-gradient-to-r from-amber-900/50 to-orange-900/50 rounded-full opacity-50" />
-              )}
-            </button>
-          ))}
+              </button>
+            );
+          })}
         </div>
 
         {/* Package Cards Grid */}
@@ -64,3 +75,4 @@ CategoryFilterSection.propTypes = {
 };
 
 export default CategoryFilterSection;
+

@@ -9,13 +9,14 @@ function PackageGrid({ packages = [], searchQuery = '' }) {
         title="No packages found"
         description="Check back soon for new travel experiences!"
         iconType="search"
+        theme="light"
       />
     );
   }
 
   return (
     <div
-      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full px-8 bg-black"
+      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full"
       role="grid"
       aria-label="Package grid"
     >

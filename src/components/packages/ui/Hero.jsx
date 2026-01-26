@@ -59,8 +59,9 @@ function Hero({ category }) {
   return (
     <section
       ref={heroRef}
-      className="relative h-[320px] md:h-[420px] overflow-hidden"
+      className="relative h-[48vh] sm:h-[60vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-[#f7fafc] via-[#f3f6fa] to-[#f7fafc]"
     >
+      <div className="absolute inset-0" style={{ background: 'linear-gradient(90deg, #f7fafc 0%, #f3f6fa 100%)' }} />
       {/* Background Images */}
       <div className="absolute inset-0">
         {images.map((image, index) => (

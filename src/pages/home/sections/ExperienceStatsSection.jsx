@@ -1,12 +1,10 @@
 
 import React, { memo } from 'react';
 import AnimatedText from '../../../components/animations/AnimatedText';
-
 import { experienceStats } from '../../../data/about/aboutData';
-import { getBackground } from '../../../constants/colors';
 
 const ExperienceStatsSection = memo(() => (
-  <section className="relative py-20 px-6" style={{ background: getBackground('section') }}>
+  <section className="relative py-20 px-6 bg-gradient-to-b from-gray-900 via-slate-900 to-gray-900">
     <div className="max-w-6xl mx-auto">
       <AnimatedText
         text="Our Experience Speaks"

@@ -1,8 +1,10 @@
 
-import React, { memo, useRef, useEffect, useState } from 'react';
+
+import { memo, useRef, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import FloatingElement from '../../../components/animations/FloatingElement';
 import { videos } from '../../../data/about/aboutData';
+import { SOCIAL_LINKS } from '../../../constants';
+
 const VideoShowcaseSection = memo(() => {
   const videoRef = useRef(null);
   const [isInView, setIsInView] = useState(false);

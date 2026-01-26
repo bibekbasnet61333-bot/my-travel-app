@@ -17,7 +17,7 @@ function PackagesContent() {
   }, []);
 
   return (
-    <div className="packages-page">
+    <div className="packages-page min-h-screen bg-slate-50">
       <Helmet>
         <title>Travel Packages | Sasa Travel</title>
         <meta
@@ -34,31 +34,39 @@ function PackagesContent() {
         <link rel="alternate" href="android-app://com.sasatravel/https/sasatravel.com/packages" />
       </Helmet>
 
+      {/* Hero Section */}
       <Hero category={category} />
 
-      <CategoryFilterSection
-        selectedCategory={category}
-        onCategoryChange={handleCategoryChange}
-      />
+      {/* Category Filter Section */}
+      <section className="w-full bg-white">
+        <CategoryFilterSection
+          selectedCategory={category}
+          onCategoryChange={handleCategoryChange}
+        />
+      </section>
 
-     
+      {/* Why Choose Us Section */}
       <WhyChooseUsPackages />
-       <AllPackagesSection />
+
+      {/* All Packages Section */}
+      <AllPackagesSection />
     </div>
   );
 }
 
 function PackagesSkeleton() {
   return (
-    <div className="packages-page">
+    <div className="packages-page min-h-screen bg-slate-50">
       <Helmet>
         <title>Loading Packages... | Sasa Travel</title>
       </Helmet>
 
       <Hero category="all" />
 
-      <div className="py-12 px-8 bg-black">
-        <PackageGridSkeleton count={6} />
+      <div className="w-full bg-white py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <PackageGridSkeleton count={6} />
+        </div>
       </div>
     </div>
   );
