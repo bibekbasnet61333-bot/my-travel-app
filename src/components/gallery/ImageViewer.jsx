@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useCallback, useRef } from 'react';
+import React, { memo, useEffect, useCallback, useRef, useState } from 'react';
 import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
 import PropTypes from 'prop-types';
 import useImageViewer from '../../hooks/gallery/useImageViewer';
@@ -9,14 +9,15 @@ const ImageViewer = ({ images, initialIndex = 0, isOpen, onClose }) => {
   const previousActiveElement = useRef(null);
   const thumbnailRef = useRef(null);
   const failedImagesRef = useRef(new Set());
-  const zoomLevelRef = useRef(1);
+  const [isKeyListenerActive, setIsKeyListenerActive] = useState(false);
 
-  // Motion values for smooth animations without re-renders
   const zoom = useMotionValue(1);
   const positionX = useMotionValue(0);
   const positionY = useMotionValue(0);
-  const cursor = useTransform(() => zoomLevelRef.current > 1 ? 'grab' : 'default');
-  const isDragging = useTransform(() => zoomLevelRef.current > 1);
+  const cursor = useTransform(() => {
+    const z = zoom.get();
+    return z > 1 ? 'grab' : 'default';
+  });
 
   const {
     currentIndex,
@@ -36,20 +37,10 @@ const ImageViewer = ({ images, initialIndex = 0, isOpen, onClose }) => {
     canNavigate
   } = useImageViewer(images, initialIndex, zoom, positionX, positionY);
 
-  // Track zoom level for cursor and drag sensitivity
-  useEffect(() => {
-    const unsubscribe = zoom.on('change', (latestZoom) => {
-      zoomLevelRef.current = latestZoom;
-    });
-    return unsubscribe;
-  }, [zoom]);
-
-  // Handle image error - fallback to placeholder
   const handleImageError = useCallback(() => {
     failedImagesRef.current.add(currentIndex);
   }, [currentIndex]);
 
-  // Get current image source with fallback
   const getCurrentImageSrc = useCallback(() => {
     if (failedImagesRef.current.has(currentIndex)) {
       return GALLERY_FALLBACK_IMAGE;
@@ -57,50 +48,29 @@ const ImageViewer = ({ images, initialIndex = 0, isOpen, onClose }) => {
     return getImageSrc(currentImage);
   }, [currentIndex, currentImage]);
 
-  // Focus management
   useEffect(() => {
     if (isOpen) {
       previousActiveElement.current = document.activeElement;
-      const closeButton = containerRef.current?.querySelector('[aria-label="Close image viewer"]');
-      if (closeButton) {
-        closeButton.focus();
-      } else {
-        containerRef.current?.focus();
-      }
       document.body.style.overflow = 'hidden';
+      requestAnimationFrame(() => {
+        if (containerRef.current) {
+          containerRef.current.focus();
+          setIsKeyListenerActive(true);
+        }
+      });
     } else {
       document.body.style.overflow = '';
+      setIsKeyListenerActive(false);
       if (previousActiveElement.current && previousActiveElement.current.focus) {
         previousActiveElement.current.focus();
       }
     }
     return () => {
       document.body.style.overflow = '';
+      setIsKeyListenerActive(false);
     };
   }, [isOpen]);
 
-  // Focus trap for keyboard navigation
-  const handleContainerKeyDown = useCallback((e) => {
-    if (!isOpen) return;
-    if (e.key === 'Tab') {
-      const focusableElements = containerRef.current?.querySelectorAll(
-        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-      );
-      if (focusableElements && focusableElements.length > 0) {
-        const firstElement = focusableElements[0];
-        const lastElement = focusableElements[focusableElements.length - 1];
-        if (e.shiftKey && document.activeElement === firstElement) {
-          e.preventDefault();
-          lastElement.focus();
-        } else if (!e.shiftKey && document.activeElement === lastElement) {
-          e.preventDefault();
-          firstElement.focus();
-        }
-      }
-    }
-  }, [isOpen]);
-
-  // Scroll active thumbnail into view
   useEffect(() => {
     if (thumbnailRef.current) {
       const activeThumbnail = thumbnailRef.current.children[currentIndex];
@@ -114,84 +84,82 @@ const ImageViewer = ({ images, initialIndex = 0, isOpen, onClose }) => {
     }
   }, [currentIndex]);
 
-  // Keyboard navigation - wrapped in useCallback with proper dependencies
-  const handleKeyDown = useCallback((e) => {
-    if (!isOpen) return;
-
-    // Ignore if focus is on interactive element (buttons, inputs)
-    const tagName = document.activeElement?.tagName.toLowerCase();
-    if (tagName === 'button' || tagName === 'input' || tagName === 'textarea') {
-      return;
+  const navigateWithArrow = useCallback((direction) => {
+    if (!canNavigate) return;
+    if (direction === 'next') {
+      nextImage();
+    } else {
+      prevImage();
     }
+  }, [canNavigate, nextImage, prevImage]);
 
-    switch (e.key) {
-      case 'Escape':
-        e.preventDefault();
-        onClose();
-        break;
-      case 'ArrowRight':
-        e.preventDefault();
-        if (canNavigate) nextImage();
-        break;
-      case 'ArrowLeft':
-        e.preventDefault();
-        if (canNavigate) prevImage();
-        break;
-      case '+':
-      case '=':
-        if (!e.shiftKey) {
+  useEffect(() => {
+    if (!isOpen || !isKeyListenerActive) return;
+
+    const handleKeyDown = (e) => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+
+      switch (e.key) {
+        case 'Escape':
+          e.preventDefault();
+          e.stopPropagation();
+          onClose();
+          break;
+        case 'ArrowRight':
+          e.preventDefault();
+          e.stopPropagation();
+          navigateWithArrow('next');
+          break;
+        case 'ArrowLeft':
+          e.preventDefault();
+          e.stopPropagation();
+          navigateWithArrow('prev');
+          break;
+        case '+':
+        case '=':
           e.preventDefault();
           zoomIn();
-        }
-        break;
-      case '-':
-        e.preventDefault();
-        zoomOut();
-        break;
-      case '0':
-        e.preventDefault();
-        resetZoom();
-        break;
-      case 'Home':
-        e.preventDefault();
-        goToImage(0);
-        break;
-      case 'End':
-        e.preventDefault();
-        goToImage(images.length - 1);
-        break;
-      case 'PageUp':
-        e.preventDefault();
-        if (canNavigate) prevImage();
-        break;
-      case 'PageDown':
-        e.preventDefault();
-        if (canNavigate) nextImage();
-        break;
-      default:
-        break;
-    }
-  }, [isOpen, onClose, canNavigate, nextImage, prevImage, zoomIn, zoomOut, resetZoom, goToImage, images.length]);
+          break;
+        case '-':
+          e.preventDefault();
+          zoomOut();
+          break;
+        case '0':
+          e.preventDefault();
+          resetZoom();
+          break;
+        case 'Home':
+          e.preventDefault();
+          goToImage(0);
+          break;
+        case 'End':
+          e.preventDefault();
+          goToImage(images.length - 1);
+          break;
+        case 'PageUp':
+          e.preventDefault();
+          navigateWithArrow('prev');
+          break;
+        case 'PageDown':
+          e.preventDefault();
+          navigateWithArrow('next');
+          break;
+        default:
+          break;
+      }
+    };
 
-  // Set up keyboard event listener with proper cleanup
-  useEffect(() => {
-    if (isOpen) {
-      // Use capture phase to intercept keyboard events first
-      window.addEventListener('keydown', handleKeyDown, { passive: false });
-      // Also listen on container for focus-trapped events
-      containerRef.current?.addEventListener('keydown', handleKeyDown, { passive: false });
+    window.addEventListener('keydown', handleKeyDown, { passive: false, capture: true });
 
-      return () => {
-        window.removeEventListener('keydown', handleKeyDown);
-        containerRef.current?.removeEventListener('keydown', handleKeyDown);
-      };
-    }
-  }, [isOpen, handleKeyDown]);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown, { capture: true });
+    };
+  }, [isOpen, isKeyListenerActive, onClose, canNavigate, navigateWithArrow, zoomIn, zoomOut, resetZoom, goToImage, images.length]);
 
-  // Handle wheel zoom
   const handleWheel = useCallback((e) => {
     if (!isOpen) return;
     e.preventDefault();
+    e.stopPropagation();
 
     const delta = e.deltaY < 0 ? config.zoomStep : -config.zoomStep;
     const currentZoom = zoom.get();
@@ -199,7 +167,6 @@ const ImageViewer = ({ images, initialIndex = 0, isOpen, onClose }) => {
     zoom.set(newZoom);
   }, [isOpen, zoom]);
 
-  // Get current zoom level for zoom controls
   const currentZoomLevel = Math.round(zoom.get() * 100);
 
   if (!isOpen) return null;
@@ -212,14 +179,13 @@ const ImageViewer = ({ images, initialIndex = 0, isOpen, onClose }) => {
       exit={{ opacity: 0 }}
       className="fixed inset-0 z-50 bg-black/95 flex flex-col outline-none"
       onWheel={handleWheel}
-      onKeyDown={handleContainerKeyDown}
+      tabIndex={-1}
       role="dialog"
       aria-modal="true"
-      aria-label="Image viewer"
-      tabIndex={-1}
+      aria-label="Image viewer - Press arrow keys to navigate"
     >
       <div className="sr-only">
-        Image viewer open. Use arrow keys to navigate. Press Escape to close.
+        Image viewer open. Press left/right arrow keys to navigate between images. Press Escape to close.
       </div>
       <div className="flex items-center justify-between p-4 text-white z-10">
         <div className="text-sm font-medium" aria-live="polite">
@@ -230,18 +196,16 @@ const ImageViewer = ({ images, initialIndex = 0, isOpen, onClose }) => {
             onClick={zoomOut}
             disabled={zoom.get() <= config.minZoom}
             className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors focus:outline-none focus:ring-2 focus:ring-amber-400 disabled:opacity-50 disabled:cursor-not-allowed"
-            aria-label="Zoom out"
-            aria-describedby="zoom-out-help"
+            aria-label="Zoom out (-)"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
             </svg>
           </button>
-          <span id="zoom-out-help" className="sr-only">Decrease zoom level</span>
           <button
             onClick={resetZoom}
             className="px-3 py-1 text-sm rounded-full bg-white/10 hover:bg-white/20 transition-colors focus:outline-none focus:ring-2 focus:ring-amber-400"
-            aria-label={`Reset zoom to 100%, current zoom: ${currentZoomLevel}%`}
+            aria-label="Reset zoom to 100%"
           >
             {currentZoomLevel}%
           </button>
@@ -249,7 +213,7 @@ const ImageViewer = ({ images, initialIndex = 0, isOpen, onClose }) => {
             onClick={zoomIn}
             disabled={zoom.get() >= config.maxZoom}
             className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors focus:outline-none focus:ring-2 focus:ring-amber-400 disabled:opacity-50 disabled:cursor-not-allowed"
-            aria-label="Zoom in"
+            aria-label="Zoom in (+)"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -309,7 +273,7 @@ const ImageViewer = ({ images, initialIndex = 0, isOpen, onClose }) => {
             <button
               onClick={prevImage}
               className="absolute left-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white/10 hover:bg-white/20 transition-colors backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
-              aria-label="Previous image (Left arrow or Swipe right)"
+              aria-label="Previous image (Left arrow)"
             >
               <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -318,7 +282,7 @@ const ImageViewer = ({ images, initialIndex = 0, isOpen, onClose }) => {
             <button
               onClick={nextImage}
               className="absolute right-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white/10 hover:bg-white/20 transition-colors backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
-              aria-label="Next image (Right arrow or Swipe left)"
+              aria-label="Next image (Right arrow)"
             >
               <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -365,7 +329,6 @@ const ImageViewer = ({ images, initialIndex = 0, isOpen, onClose }) => {
   );
 };
 
-// Zoom configuration
 const config = {
   minZoom: 0.5,
   maxZoom: 3,
@@ -387,4 +350,3 @@ ImageViewer.propTypes = {
 };
 
 export default memo(ImageViewer);
-
