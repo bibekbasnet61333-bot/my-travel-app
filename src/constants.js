@@ -49,20 +49,13 @@ export const DESTINATIONS = [
 export const ITEMS_PER_PAGE = 20;
 
 // Contact Phone Numbers - Centralized for maintainability
-// Note: In production, these values should come from environment variables
-// Use import.meta.env for Vite environment variables
-const getWhatsAppNumber = () => {
-  const envPhone = import.meta.env.VITE_WHATSAPP_PHONE_NUMBER;
-  if (!envPhone && process.env.NODE_ENV === 'production') {
-    throw new Error('VITE_WHATSAPP_PHONE_NUMBER is required in production');
-  }
-  return envPhone || '+977 9817653406';
-};
+// Fallback number provided for development/staging
+const WHATSAPP_NUMBER = import.meta.env.VITE_WHATSAPP_PHONE_NUMBER || '+9779817653406';
 
 export const CONTACT_PHONES = {
-  WHATSAPP: getWhatsAppNumber(),
+  WHATSAPP: WHATSAPP_NUMBER,
   PRIMARY: '+977 9813641003',
-  WHATSAPP_LINK: `https://wa.me/${import.meta.env.VITE_WHATSAPP_PHONE_NUMBER || '9779817653406'.replace(/\D/g, '')}`,
+  WHATSAPP_LINK: `https://wa.me/${WHATSAPP_NUMBER.replace(/\D/g, '')}`,
 };
 
 // Social Media Links - Centralized for maintainability
