@@ -30,34 +30,9 @@
   ],
   "rewrites": [
     {
-      "source": "/:file([^.]+)",
-      "has": [
-        {
-          "type": "file"
-        }
-      ],
-      "destination": "/:file"
-    },
-    {
       "source": "/:path*",
-      "has": [
-        {
-          "type": "file"
-        }
-      ],
-      "destination": "/:path"
-    },
-    {
-      "source": "/:path+",
-      "missing": [
-        {
-          "type": "file"
-        },
-        {
-          "type": "directory"
-        }
-      ],
-      "destination": "/index.html"
+      "destination": "/:path*"
     }
   ]
 }
+
