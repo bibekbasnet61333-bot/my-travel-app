@@ -9,12 +9,14 @@ const ImageViewer = ({ images, initialIndex = 0, isOpen, onClose }) => {
   const previousActiveElement = useRef(null);
   const thumbnailRef = useRef(null);
   const failedImagesRef = useRef(new Set());
+  const zoomLevelRef = useRef(1);
 
   // Motion values for smooth animations without re-renders
   const zoom = useMotionValue(1);
   const positionX = useMotionValue(0);
   const positionY = useMotionValue(0);
-  const cursor = useTransform(() => zoom.get() > 1 ? 'grab' : 'default');
+  const cursor = useTransform(() => zoomLevelRef.current > 1 ? 'grab' : 'default');
+  const isDragging = useTransform(() => zoomLevelRef.current > 1);
 
   const {
     currentIndex,
@@ -33,6 +35,14 @@ const ImageViewer = ({ images, initialIndex = 0, isOpen, onClose }) => {
     handleTouchEnd,
     canNavigate
   } = useImageViewer(images, initialIndex, zoom, positionX, positionY);
+
+  // Track zoom level for cursor and drag sensitivity
+  useEffect(() => {
+    const unsubscribe = zoom.on('change', (latestZoom) => {
+      zoomLevelRef.current = latestZoom;
+    });
+    return unsubscribe;
+  }, [zoom]);
 
   // Handle image error - fallback to placeholder
   const handleImageError = useCallback(() => {
@@ -104,9 +114,16 @@ const ImageViewer = ({ images, initialIndex = 0, isOpen, onClose }) => {
     }
   }, [currentIndex]);
 
-  // Handle keyboard navigation
+  // Keyboard navigation - wrapped in useCallback with proper dependencies
   const handleKeyDown = useCallback((e) => {
     if (!isOpen) return;
+
+    // Ignore if focus is on interactive element (buttons, inputs)
+    const tagName = document.activeElement?.tagName.toLowerCase();
+    if (tagName === 'button' || tagName === 'input' || tagName === 'textarea') {
+      return;
+    }
+
     switch (e.key) {
       case 'Escape':
         e.preventDefault();
@@ -114,16 +131,18 @@ const ImageViewer = ({ images, initialIndex = 0, isOpen, onClose }) => {
         break;
       case 'ArrowRight':
         e.preventDefault();
-        nextImage();
+        if (canNavigate) nextImage();
         break;
       case 'ArrowLeft':
         e.preventDefault();
-        prevImage();
+        if (canNavigate) prevImage();
         break;
       case '+':
       case '=':
-        e.preventDefault();
-        zoomIn();
+        if (!e.shiftKey) {
+          e.preventDefault();
+          zoomIn();
+        }
         break;
       case '-':
         e.preventDefault();
@@ -141,26 +160,47 @@ const ImageViewer = ({ images, initialIndex = 0, isOpen, onClose }) => {
         e.preventDefault();
         goToImage(images.length - 1);
         break;
+      case 'PageUp':
+        e.preventDefault();
+        if (canNavigate) prevImage();
+        break;
+      case 'PageDown':
+        e.preventDefault();
+        if (canNavigate) nextImage();
+        break;
       default:
         break;
     }
-  }, [isOpen, onClose, nextImage, prevImage, zoomIn, zoomOut, resetZoom, goToImage, images.length]);
+  }, [isOpen, onClose, canNavigate, nextImage, prevImage, zoomIn, zoomOut, resetZoom, goToImage, images.length]);
 
+  // Set up keyboard event listener with proper cleanup
   useEffect(() => {
     if (isOpen) {
-      window.addEventListener('keydown', handleKeyDown);
-      return () => window.removeEventListener('keydown', handleKeyDown);
+      // Use capture phase to intercept keyboard events first
+      window.addEventListener('keydown', handleKeyDown, { passive: false });
+      // Also listen on container for focus-trapped events
+      containerRef.current?.addEventListener('keydown', handleKeyDown, { passive: false });
+
+      return () => {
+        window.removeEventListener('keydown', handleKeyDown);
+        containerRef.current?.removeEventListener('keydown', handleKeyDown);
+      };
     }
   }, [isOpen, handleKeyDown]);
 
+  // Handle wheel zoom
   const handleWheel = useCallback((e) => {
+    if (!isOpen) return;
     e.preventDefault();
-    if (e.deltaY < 0) {
-      zoomIn();
-    } else {
-      zoomOut();
-    }
-  }, [zoomIn, zoomOut]);
+
+    const delta = e.deltaY < 0 ? config.zoomStep : -config.zoomStep;
+    const currentZoom = zoom.get();
+    const newZoom = Math.min(Math.max(currentZoom + delta, config.minZoom), config.maxZoom);
+    zoom.set(newZoom);
+  }, [isOpen, zoom]);
+
+  // Get current zoom level for zoom controls
+  const currentZoomLevel = Math.round(zoom.get() * 100);
 
   if (!isOpen) return null;
 
@@ -188,23 +228,27 @@ const ImageViewer = ({ images, initialIndex = 0, isOpen, onClose }) => {
         <div className="flex items-center gap-2" role="group" aria-label="Zoom controls">
           <button
             onClick={zoomOut}
-            className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors focus:outline-none focus:ring-2 focus:ring-amber-400"
+            disabled={zoom.get() <= config.minZoom}
+            className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors focus:outline-none focus:ring-2 focus:ring-amber-400 disabled:opacity-50 disabled:cursor-not-allowed"
             aria-label="Zoom out"
+            aria-describedby="zoom-out-help"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
             </svg>
           </button>
+          <span id="zoom-out-help" className="sr-only">Decrease zoom level</span>
           <button
             onClick={resetZoom}
             className="px-3 py-1 text-sm rounded-full bg-white/10 hover:bg-white/20 transition-colors focus:outline-none focus:ring-2 focus:ring-amber-400"
-            aria-label="Reset zoom"
+            aria-label={`Reset zoom to 100%, current zoom: ${currentZoomLevel}%`}
           >
-            {Math.round(zoom.get() * 100)}%
+            {currentZoomLevel}%
           </button>
           <button
             onClick={zoomIn}
-            className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors focus:outline-none focus:ring-2 focus:ring-amber-400"
+            disabled={zoom.get() >= config.maxZoom}
+            className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors focus:outline-none focus:ring-2 focus:ring-amber-400 disabled:opacity-50 disabled:cursor-not-allowed"
             aria-label="Zoom in"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -215,7 +259,7 @@ const ImageViewer = ({ images, initialIndex = 0, isOpen, onClose }) => {
         <button
           onClick={onClose}
           className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors focus:outline-none focus:ring-2 focus:ring-amber-400"
-          aria-label="Close image viewer"
+          aria-label="Close image viewer (ESC)"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -231,6 +275,7 @@ const ImageViewer = ({ images, initialIndex = 0, isOpen, onClose }) => {
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
+        style={{ touchAction: 'none' }}
       >
         <AnimatePresence mode="wait">
           <motion.img
@@ -248,12 +293,15 @@ const ImageViewer = ({ images, initialIndex = 0, isOpen, onClose }) => {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{
               opacity: 1,
-              scale: zoom,
-              x: positionX,
-              y: positionY
+              scale: zoom.get(),
+              x: positionX.get(),
+              y: positionY.get()
             }}
-            transition={{ duration: 0.3 }}
-            style={{ cursor: cursor }}
+            transition={{ duration: 0.25 }}
+            style={{
+              cursor: cursor,
+              transformOrigin: 'center center'
+            }}
           />
         </AnimatePresence>
         {canNavigate && (
@@ -261,7 +309,7 @@ const ImageViewer = ({ images, initialIndex = 0, isOpen, onClose }) => {
             <button
               onClick={prevImage}
               className="absolute left-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white/10 hover:bg-white/20 transition-colors backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
-              aria-label="Previous image (left arrow)"
+              aria-label="Previous image (Left arrow or Swipe right)"
             >
               <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -270,7 +318,7 @@ const ImageViewer = ({ images, initialIndex = 0, isOpen, onClose }) => {
             <button
               onClick={nextImage}
               className="absolute right-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white/10 hover:bg-white/20 transition-colors backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
-              aria-label="Next image (right arrow)"
+              aria-label="Next image (Right arrow or Swipe left)"
             >
               <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -315,6 +363,13 @@ const ImageViewer = ({ images, initialIndex = 0, isOpen, onClose }) => {
       )}
     </motion.div>
   );
+};
+
+// Zoom configuration
+const config = {
+  minZoom: 0.5,
+  maxZoom: 3,
+  zoomStep: 0.25
 };
 
 ImageViewer.propTypes = {
