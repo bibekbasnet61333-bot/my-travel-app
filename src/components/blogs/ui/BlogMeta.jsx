@@ -1,15 +1,14 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 import { formatDate } from '../../../utils/dateUtils';
 
 const BlogMeta = ({ author, tags, date }) => {
   return (
-    <div className="mt-8 pt-8 border-t border-gray-200">
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div className="flex items-center text-sm text-gray-600">
-          <span className="font-medium">By {author}</span>
-          <span className="mx-2">•</span>
-          <time dateTime={date}>
+    <div className="mt-6 md:mt-8 pt-6 md:pt-8 border-t border-slate-200">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex items-center text-sm md:text-base text-slate-600">
+          <span className="font-medium text-slate-800">By {author}</span>
+          <span className="mx-2 hidden sm:inline">•</span>
+          <time dateTime={date} className="hidden sm:inline">
             {formatDate(date)}
           </time>
         </div>
@@ -18,9 +17,9 @@ const BlogMeta = ({ author, tags, date }) => {
             {tags.map((tag) => (
               <span
                 key={tag}
-                className="inline-block bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-xs font-medium"
+                className="inline-block bg-slate-100 text-slate-700 px-2.5 py-1 rounded-full text-xs md:text-sm font-medium"
               >
-                {tag}
+                #{tag}
               </span>
             ))}
           </div>

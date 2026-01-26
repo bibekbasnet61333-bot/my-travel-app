@@ -1,4 +1,5 @@
 import { memo, useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 // Reusable destination components
@@ -31,6 +32,7 @@ const DestinationTemplate = memo(({
   // Modal state management
   const [modalOpen, setModalOpen] = useState(false);
   const [modalType, setModalType] = useState('faq');
+  const navigate = useNavigate();
 
   const openModal = useCallback((type = 'faq') => {
     setModalType(type);
@@ -75,14 +77,11 @@ const DestinationTemplate = memo(({
   };
 
   // Gallery navigation handler
-  const handleViewGallery = () => {
+  const handleViewGallery = useCallback(() => {
     if (galleryPath) {
-      // Navigation handled by parent
-      if (modalData?.onViewGallery) {
-        modalData.onViewGallery();
-      }
+      navigate(galleryPath);
     }
-  };
+  }, [navigate, galleryPath]);
 
   return (
     <motion.div

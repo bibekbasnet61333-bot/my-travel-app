@@ -4,8 +4,9 @@ import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
 import ImageViewer from '../../components/gallery/ImageViewer';
 import GallerySkeleton from '../../components/gallery/GallerySkeleton';
+import EmptyState from '../../components/ui/EmptyState';
 import { getDestinationBySlug, getThemeByCategory } from '../../data/gallery';
-import { getImageSrc } from '../../utils/galleryImageUtils';
+import { getImageSrc, GALLERY_FALLBACK_IMAGE } from '../../utils/galleryImageUtils';
 
 const GalleryDetailPage = () => {
   const { slug } = useParams();
@@ -19,12 +20,10 @@ const GalleryDetailPage = () => {
   // Track failed images with a Set stored in state for proper re-renders
   const [failedImages, setFailedImages] = useState(() => new Set());
 
-  // Refs for values needed across effects
-  const destinationRef = useRef(null);
-  const comingSoonRef = useRef(false);
+  // Ref for focus management
   const triggerRef = useRef(null);
 
-  // Memo hooks
+  // Memoized destination and theme
   const destination = useMemo(() => {
     if (!slug) return null;
     return getDestinationBySlug(slug);
@@ -35,11 +34,7 @@ const GalleryDetailPage = () => {
     return getThemeByCategory(destination.category);
   }, [destination]);
 
-  // Update refs when destination changes
-  useEffect(() => {
-    destinationRef.current = destination;
-    comingSoonRef.current = destination?.comingSoon || false;
-  }, [destination]);
+  const comingSoon = destination?.comingSoon || false;
 
   // Loading timer
   useEffect(() => {
@@ -53,10 +48,10 @@ const GalleryDetailPage = () => {
   // Redirect if not found
   useEffect(() => {
     if (isLoading) return;
-    if (!slug || !destinationRef.current) {
+    if (!slug || !destination) {
       navigate('/gallery', { replace: true });
     }
-  }, [slug, isLoading, navigate]);
+  }, [slug, isLoading, destination, navigate]);
 
   // Handle image error - properly update state without force re-renders
   const handleImageError = useCallback((index) => {
@@ -72,32 +67,32 @@ const GalleryDetailPage = () => {
     return failedImages.has(index);
   }, [failedImages]);
 
-  // Get image source with fallback - memoized for performance
+  // Get image source with fallback
   const getImageWithFallback = useCallback((image, index) => {
     if (hasImageFailed(index)) {
-      return 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=1200&auto=format&fit=crop';
+      return GALLERY_FALLBACK_IMAGE;
     }
     return getImageSrc(image);
   }, [hasImageFailed]);
 
-  // Callbacks - stable with empty deps
+  // Handle image click
   const handleImageClick = useCallback((index, e) => {
-    if (comingSoonRef.current) return;
-    // Store reference to trigger element for focus return
+    if (comingSoon) return;
     triggerRef.current = e?.currentTarget || null;
     setSelectedImageIndex(index);
     setIsViewerOpen(true);
-  }, []);
+  }, [comingSoon]);
 
+  // Close viewer
   const closeViewer = useCallback(() => {
     setIsViewerOpen(false);
     setSelectedImageIndex(null);
-    // Return focus to trigger element
     if (triggerRef.current) {
       triggerRef.current.focus();
     }
   }, []);
 
+  // Handle keyboard navigation
   const handleItemKeyDown = useCallback((e, index) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
@@ -107,14 +102,14 @@ const GalleryDetailPage = () => {
 
   // Early returns AFTER all hooks
   if (isLoading) {
-    return <GallerySkeleton variant="detail-page" />;
+    return <GallerySkeleton variant="hero" />;
   }
 
   if (!destination) {
     return null;
   }
 
-  const { name, description, heroImage, images, imageCount, comingSoon } = destination;
+  const { name, description, heroImage, images, imageCount } = destination;
 
   // Variants defined after early returns
   const containerVariants = {
@@ -139,76 +134,58 @@ const GalleryDetailPage = () => {
 
       {/* Hero Section */}
       <section className="relative h-[50vh] md:h-[60vh] overflow-hidden">
+        {/* Background overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/50 to-black/60 z-10" />
+        
         <img
           src={heroImage}
           alt={`${name} hero image`}
-          fetchPriority="high"
+          fetchpriority="high"
           className="absolute inset-0 w-full h-full object-cover"
         />
-        <div className="relative z-20 h-full flex flex-col items-center justify-center text-white px-6">
+        
+        {/* Back Button - positioned to avoid text overlap, with proper z-index */}
+        <button
+          type="button"
+          onClick={() => navigate('/gallery')}
+          className="absolute top-16 left-4 sm:top-20 sm:left-6 md:top-6 md:left-6 lg:top-8 lg:left-8 z-30 flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full text-white transition-colors focus:outline-none focus:ring-2 focus:ring-amber-400 text-xs sm:text-sm cursor-pointer"
+          aria-label="Back to Gallery"
+        >
+          <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+          <span className="hidden xs:inline">Back</span>
+        </button>
+
+        <div className="relative z-20 h-full flex flex-col items-center justify-center text-white px-4 sm:px-6">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="text-center"
+            className="text-center max-w-3xl mx-auto"
           >
             <h1
-              className="text-4xl md:text-6xl font-bold mb-4 bg-clip-text text-transparent"
+              className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-bold mb-2 sm:mb-3 bg-clip-text text-transparent"
               style={{ backgroundImage: theme?.titleGradient }}
             >
               {name}
             </h1>
-            <p className="text-xl text-gray-200 max-w-2xl mx-auto">
+            <p className="text-sm sm:text-lg md:text-xl text-gray-200 max-w-2xl mx-auto">
               {description}
             </p>
             {!comingSoon && (
-              <p className="mt-4 text-amber-300">
+              <p className="mt-2 sm:mt-4 text-xs sm:text-base text-amber-300">
                 {imageCount} photos in this gallery
               </p>
             )}
           </motion.div>
         </div>
-
-        {/* Back Button */}
-        <button
-          onClick={() => navigate('/gallery')}
-          className="absolute top-24 left-6 md:top-8 md:left-8 z-20 flex items-center gap-2 px-4 py-2 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full text-white transition-colors focus:outline-none focus:ring-2 focus:ring-amber-400"
-          aria-label="Back to Gallery"
-        >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-          <span>Back to Gallery</span>
-        </button>
       </section>
 
       {/* Images Grid */}
       <section className="py-16 px-6">
         <div className="container mx-auto max-w-7xl">
-          {comingSoon ? (
-            <div className="text-center py-16">
-              <div className="bg-gray-100 rounded-2xl p-12 max-w-md mx-auto">
-                <svg
-                  className="w-20 h-20 mx-auto text-gray-400 mb-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={1.5}
-                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-                <h3 className="text-2xl font-bold text-gray-600 mb-2">Coming Soon</h3>
-                <p className="text-gray-500">
-                  We are curating an amazing collection of photos from {name}. Check back soon!
-                </p>
-              </div>
-            </div>
-          ) : (
+          {!comingSoon ? (
             <motion.div
               variants={containerVariants}
               initial="hidden"
@@ -245,7 +222,7 @@ const GalleryDetailPage = () => {
                     sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
                     alt={`${name} photo ${index + 1}`}
                     loading={index < 2 ? 'eager' : 'lazy'}
-                    fetchPriority={index < 2 ? 'high' : 'auto'}
+                    fetchpriority={index < 2 ? 'high' : 'auto'}
                     decoding="async"
                     onError={() => handleImageError(index)}
                     className={`w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ${hasImageFailed(index) ? 'opacity-50' : ''}`}
@@ -254,6 +231,16 @@ const GalleryDetailPage = () => {
                 </motion.button>
               ))}
             </motion.div>
+          ) : (
+            <EmptyState
+              Icon={(props) => (
+                <svg {...props} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              )}
+              title="Coming Soon"
+              description={`We are curating an amazing collection of photos from ${name}. Check back soon!`}
+            />
           )}
         </div>
       </section>

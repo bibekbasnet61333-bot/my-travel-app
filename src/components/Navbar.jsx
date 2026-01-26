@@ -5,7 +5,7 @@ import DestinationsDropdown from './DestinationsDropdown';
 import logoImage from '../assets/sasa_logo.png';
 import { CONTACT_PHONES } from '../constants';
 
-function NavMenuItem({ to, label, isActive, onClick }) {
+function NavMenuItem({ to, label, onClick }) {
   return (
     <NavLink
       to={to}
@@ -13,10 +13,9 @@ function NavMenuItem({ to, label, isActive, onClick }) {
       onClick={onClick}
       className={({ isActive }) =>
         `nav-link text-sm uppercase tracking-wider font-medium px-3 py-2 rounded transition-all duration-200
-        ${isActive ? 'text-amber-700 bg-amber-200 font-bold underline underline-offset-4' : 'text-amber-900 hover:text-amber-700 hover:bg-amber-100'}
+        ${isActive ? 'text-amber-700 bg-amber-200 font-bold underline underline-offset-4' : 'text-slate-800 hover:text-amber-700 hover:bg-amber-100'}
         focus:outline-none focus:ring-2 focus:ring-amber-400`
       }
-      aria-current={isActive ? 'page' : undefined}
     >
       {label}
     </NavLink>
@@ -70,7 +69,6 @@ export default function Navbar() {
         </button>
       </div>
 
-      {/* Mobile Menu */}
       <div
         className={`md:hidden bg-white border-t border-slate-200 transition-all duration-300 ease-in-out ${
           open ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0 overflow-hidden'
@@ -82,7 +80,6 @@ export default function Navbar() {
           <ul className="space-y-4">
             {LINKS_STATIC.map((l) => {
               if (l.key === 'destinations') {
-                // For mobile, DestinationsDropdown now returns a fragment of <li> elements
                 return <DestinationsDropdown key={l.key} mobile closeMenu={close} />;
               }
               return <li key={l.key}><NavMenuItem to={l.to} label={l.label} onClick={close} /></li>;
@@ -93,3 +90,4 @@ export default function Navbar() {
     </header>
   );
 }
+

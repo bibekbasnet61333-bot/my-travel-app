@@ -1,5 +1,5 @@
 import React, { memo, useEffect, useCallback, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
 import PropTypes from 'prop-types';
 import useImageViewer from '../../hooks/gallery/useImageViewer';
 import { getImageSrc, getImageSrcset, GALLERY_FALLBACK_IMAGE } from '../../utils/galleryImageUtils';
@@ -10,11 +10,15 @@ const ImageViewer = ({ images, initialIndex = 0, isOpen, onClose }) => {
   const thumbnailRef = useRef(null);
   const failedImagesRef = useRef(new Set());
 
+  // Motion values for smooth animations without re-renders
+  const zoom = useMotionValue(1);
+  const positionX = useMotionValue(0);
+  const positionY = useMotionValue(0);
+  const cursor = useTransform(() => zoom.get() > 1 ? 'grab' : 'default');
+
   const {
     currentIndex,
     currentImage,
-    zoom,
-    position,
     nextImage,
     prevImage,
     goToImage,
@@ -28,7 +32,7 @@ const ImageViewer = ({ images, initialIndex = 0, isOpen, onClose }) => {
     handleTouchMove,
     handleTouchEnd,
     canNavigate
-  } = useImageViewer(images, initialIndex);
+  } = useImageViewer(images, initialIndex, zoom, positionX, positionY);
 
   // Handle image error - fallback to placeholder
   const handleImageError = useCallback(() => {
@@ -196,7 +200,7 @@ const ImageViewer = ({ images, initialIndex = 0, isOpen, onClose }) => {
             className="px-3 py-1 text-sm rounded-full bg-white/10 hover:bg-white/20 transition-colors focus:outline-none focus:ring-2 focus:ring-amber-400"
             aria-label="Reset zoom"
           >
-            {Math.round(zoom * 100)}%
+            {Math.round(zoom.get() * 100)}%
           </button>
           <button
             onClick={zoomIn}
@@ -219,7 +223,7 @@ const ImageViewer = ({ images, initialIndex = 0, isOpen, onClose }) => {
         </button>
       </div>
       <div
-        className="flex-1 relative overflow-hidden flex items-center justify-center cursor-grab active:cursor-grabbing"
+        className="flex-1 relative overflow-hidden flex items-center justify-center"
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
@@ -238,18 +242,18 @@ const ImageViewer = ({ images, initialIndex = 0, isOpen, onClose }) => {
             onError={handleImageError}
             className="max-w-full max-h-full object-contain select-none"
             draggable={false}
-            fetchPriority="high"
+            fetchpriority="high"
             loading="eager"
             decoding="async"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{
               opacity: 1,
               scale: zoom,
-              x: position.x,
-              y: position.y
+              x: positionX,
+              y: positionY
             }}
             transition={{ duration: 0.3 }}
-            style={{ cursor: zoom > 1 ? 'grab' : 'default' }}
+            style={{ cursor: cursor }}
           />
         </AnimatePresence>
         {canNavigate && (

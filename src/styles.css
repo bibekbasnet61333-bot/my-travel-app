@@ -19,29 +19,6 @@
   .main-content {
     @apply flex-1;
   }
-
-  .nav-link {
-    @apply relative text-gray-300 px-0.5 py-1 transition-all duration-200 ease-in-out;
-  }
-
-  .nav-link::after {
-    content: "";
-    @apply absolute left-1/2 -bottom-1.5 w-3/5 h-0.5 rounded-sm bg-gradient-to-r from-cyan-500 to-blue-500;
-    transform: translateX(-50%) scaleX(0);
-    transition: transform 240ms cubic-bezier(0.2, 0.9, 0.2, 1);
-  }
-
-  .nav-link:hover {
-    @apply text-white -translate-y-0.5;
-  }
-
-  .nav-link:hover::after {
-    transform: translateX(-50%) scaleX(1);
-  }
-
-  .nav-link.active {
-    @apply text-white font-semibold;
-  }
 }
 
 @layer utilities {
@@ -53,6 +30,67 @@
 
   .animate-fade-in {
     animation: fade-in 0.8s ease-out forwards;
+  }
+
+  /* Slow Pulse Animation - Used by BlogHero */
+  @keyframes slow-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+  }
+
+  .animate-slow-pulse {
+    animation: slow-pulse 4s ease-in-out infinite;
+  }
+
+  /* Color Fade Animation - Used by BlogHero overlay */
+  @keyframes color-fade {
+    0%, 100% {
+      background-color: rgba(0, 0, 0, 0.3);
+    }
+    50% {
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+  }
+
+  .animate-color-fade {
+    animation: color-fade 8s ease-in-out infinite;
+  }
+
+  /* Fade In Up Animation - Used by Blog components */
+  @keyframes fade-in-up {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in-up {
+    animation: fade-in-up 0.8s ease-out forwards;
+  }
+
+  /* Scroll Indicator Animation */
+  .scroll-indicator {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: bounce 2s infinite;
+  }
+
+  @keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+      transform: translateX(-50%) translateY(0);
+    }
+    40% {
+      transform: translateX(-50%) translateY(-10px);
+    }
+    60% {
+      transform: translateX(-50%) translateY(-5px);
+    }
   }
 
   /* Hover Effects */

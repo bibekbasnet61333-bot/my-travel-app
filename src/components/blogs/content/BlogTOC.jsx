@@ -18,7 +18,6 @@ const BlogTOC = ({ items, activeSection, readingProgress, title = "Table of Cont
           {title}
         </h3>
 
-        {/* Reading Progress */}
         {showProgress && (
           <div className="mb-4">
             <div className="flex justify-between text-xs text-slate-500 mb-1">
@@ -37,7 +36,7 @@ const BlogTOC = ({ items, activeSection, readingProgress, title = "Table of Cont
 
       <nav>
         <ul className="space-y-2">
-          {items.map((item, index) => (
+          {items.map((item) => (
             <li key={item.id}>
               <button
                 onClick={() => scrollToSection(item.id)}
@@ -66,7 +65,6 @@ const BlogTOC = ({ items, activeSection, readingProgress, title = "Table of Cont
         </ul>
       </nav>
 
-      {/* Quick Actions */}
       <div className="mt-6 pt-6 border-t border-slate-200">
         <div className="space-y-2">
           <button
@@ -95,3 +93,4 @@ const BlogTOC = ({ items, activeSection, readingProgress, title = "Table of Cont
 };
 
 export default BlogTOC;
+

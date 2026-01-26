@@ -45,13 +45,6 @@ const FeaturedPackagesSection = memo(() => {
               {category.name} ({category.count})
             </button>
           ))}
-          <Link
-            to="/contact"
-            className="px-4 py-2 rounded-full font-semibold bg-gradient-to-r from-emerald-600 to-blue-600 text-white shadow-md hover:scale-105 transition-all duration-300 text-xs sm:text-sm ml-2"
-            aria-label="Contact Us"
-          >
-            Contact Us
-          </Link>
         </div>
 
         <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 lg:gap-6">

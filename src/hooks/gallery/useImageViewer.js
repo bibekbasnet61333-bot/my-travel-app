@@ -1,19 +1,19 @@
 // Custom hook for gallery image viewer
 // Handles zoom, pan, keyboard, and touch interactions
+// Optimized with motion values for smooth animations without re-renders
 
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useCallback, useRef, useEffect } from 'react';
 import { IMAGE_VIEWER_CONFIG } from '../../data/gallery/galleryConfig';
 
-const useImageViewer = (images = [], initialIndex = 0) => {
-  const [currentIndex, setCurrentIndex] = useState(initialIndex);
-  const [zoom, setZoom] = useState(1);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [isDragging, setIsDragging] = useState(false);
+const useImageViewer = (images = [], initialIndex = 0, zoomMotion, positionXMotion, positionYMotion) => {
+  // Store motion values externally or use internal state if not provided
+  const currentIndexRef = { current: initialIndex };
 
   const imageRef = useRef(null);
   const dragStart = useRef({ x: 0, y: 0 });
   const touchStart = useRef({ x: 0, y: 0 });
   const pinchStart = useRef({ distance: 0, zoom: 1 });
+  const isDraggingRef = { current: false };
 
   const config = IMAGE_VIEWER_CONFIG;
 
@@ -23,29 +23,49 @@ const useImageViewer = (images = [], initialIndex = 0) => {
   }, [config.minZoom, config.maxZoom]);
 
   // Current image
-  const currentImage = images[currentIndex] || '';
+  const currentImage = images[currentIndexRef.current] || '';
+
+  // Get zoom/position from motion values or refs
+  const getZoom = useCallback(() => {
+    return zoomMotion ? zoomMotion.get() : 1;
+  }, [zoomMotion]);
+
+  const getPosition = useCallback(() => {
+    return {
+      x: positionXMotion ? positionXMotion.get() : 0,
+      y: positionYMotion ? positionYMotion.get() : 0
+    };
+  }, [positionXMotion, positionYMotion]);
 
   // Reset state when opening
   const resetState = useCallback(() => {
-    setZoom(1);
-    setPosition({ x: 0, y: 0 });
+    if (zoomMotion) zoomMotion.set(1);
+    if (positionXMotion) positionXMotion.set(0);
+    if (positionYMotion) positionYMotion.set(0);
+  }, [zoomMotion, positionXMotion, positionYMotion]);
+
+  // Set current index
+  const setCurrentIndex = useCallback((index) => {
+    currentIndexRef.current = index;
   }, []);
 
   // Navigate to next image
   const nextImage = useCallback(() => {
     if (images.length > 1) {
-      setCurrentIndex((prev) => (prev + 1) % images.length);
+      const next = (currentIndexRef.current + 1) % images.length;
+      setCurrentIndex(next);
       resetState();
     }
-  }, [images.length, resetState]);
+  }, [images.length, setCurrentIndex, resetState]);
 
   // Navigate to previous image
   const prevImage = useCallback(() => {
     if (images.length > 1) {
-      setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
+      const prev = (currentIndexRef.current - 1 + images.length) % images.length;
+      setCurrentIndex(prev);
       resetState();
     }
-  }, [images.length, resetState]);
+  }, [images.length, setCurrentIndex, resetState]);
 
   // Go to specific image
   const goToImage = useCallback((index) => {
@@ -53,42 +73,49 @@ const useImageViewer = (images = [], initialIndex = 0) => {
       setCurrentIndex(index);
       resetState();
     }
-  }, [images.length, resetState]);
+  }, [images.length, setCurrentIndex, resetState]);
 
   // Zoom in
   const zoomIn = useCallback(() => {
-    setZoom((prev) => validateZoom(prev + config.zoomStep));
-  }, [config.zoomStep, validateZoom]);
+    const currentZoom = getZoom();
+    const newZoom = validateZoom(currentZoom + config.zoomStep);
+    if (zoomMotion) zoomMotion.set(newZoom);
+  }, [config.zoomStep, validateZoom, zoomMotion, getZoom]);
 
   // Zoom out
   const zoomOut = useCallback(() => {
-    setZoom((prev) => validateZoom(prev - config.zoomStep));
-  }, [config.zoomStep, validateZoom]);
+    const currentZoom = getZoom();
+    const newZoom = validateZoom(currentZoom - config.zoomStep);
+    if (zoomMotion) zoomMotion.set(newZoom);
+  }, [config.zoomStep, validateZoom, zoomMotion, getZoom]);
 
   // Reset zoom
   const resetZoom = useCallback(() => {
     resetState();
   }, [resetState]);
 
-  // Mouse drag handlers with proper cleanup
+  // Mouse drag handlers
   const handleMouseDown = useCallback((e) => {
-    if (zoom > 1) {
-      setIsDragging(true);
-      dragStart.current = { x: e.clientX - position.x, y: e.clientY - position.y };
+    if (getZoom() > 1) {
+      isDraggingRef.current = true;
+      const pos = getPosition();
+      dragStart.current = { x: e.clientX - pos.x, y: e.clientY - pos.y };
     }
-  }, [zoom, position]);
+  }, [getZoom, getPosition]);
 
   const handleMouseMove = useCallback((e) => {
-    if (isDragging && zoom > 1) {
-      setPosition({
+    if (isDraggingRef.current && getZoom() > 1) {
+      const newPos = {
         x: e.clientX - dragStart.current.x,
         y: e.clientY - dragStart.current.y
-      });
+      };
+      if (positionXMotion) positionXMotion.set(newPos.x);
+      if (positionYMotion) positionYMotion.set(newPos.y);
     }
-  }, [isDragging, zoom]);
+  }, [getZoom, positionXMotion, positionYMotion]);
 
   const handleMouseUp = useCallback(() => {
-    setIsDragging(false);
+    isDraggingRef.current = false;
   }, []);
 
   // Calculate distance between two touch points
@@ -101,42 +128,37 @@ const useImageViewer = (images = [], initialIndex = 0) => {
   // Touch handlers for mobile swipe and pinch zoom
   const handleTouchStart = useCallback((e) => {
     if (e.touches.length === 2 && config.enablePinchZoom) {
-      // Pinch gesture start
       pinchStart.current = {
         distance: getTouchDistance(e.touches),
-        zoom: zoom
+        zoom: getZoom()
       };
     } else if (e.touches.length === 1) {
-      // Single touch for swipe
       touchStart.current = {
         x: e.touches[0].clientX,
         y: e.touches[0].clientY
       };
     }
-  }, [config.enablePinchZoom, getTouchDistance, zoom]);
+  }, [config.enablePinchZoom, getTouchDistance, getZoom]);
 
   const handleTouchMove = useCallback((e) => {
     if (e.touches.length === 2 && config.enablePinchZoom) {
-      // Handle pinch zoom
       e.preventDefault();
       const currentDistance = getTouchDistance(e.touches);
       const scale = currentDistance / pinchStart.current.distance;
       const newZoom = validateZoom(pinchStart.current.zoom * scale);
-      setZoom(newZoom);
+      if (zoomMotion) zoomMotion.set(newZoom);
     }
-  }, [config.enablePinchZoom, getTouchDistance, validateZoom]);
+  }, [config.enablePinchZoom, getTouchDistance, validateZoom, zoomMotion]);
 
   const handleTouchEnd = useCallback((e) => {
     if (!config.enableTouchSwipe) return;
 
-    // Only handle swipe if it was a single touch gesture
     if (e.changedTouches.length === 1 && !pinchStart.current.distance) {
       const touchEndX = e.changedTouches[0].clientX;
       const touchEndY = e.changedTouches[0].clientY;
       const diffX = touchStart.current.x - touchEndX;
       const diffY = touchStart.current.y - touchEndY;
 
-      // Minimum swipe distance
       if (Math.abs(diffX) > 50 && Math.abs(diffX) > Math.abs(diffY)) {
         if (diffX > 0) {
           nextImage();
@@ -146,7 +168,6 @@ const useImageViewer = (images = [], initialIndex = 0) => {
       }
     }
 
-    // Reset pinch tracking
     pinchStart.current = { distance: 0, zoom: 1 };
   }, [config.enableTouchSwipe, nextImage, prevImage]);
 
@@ -159,11 +180,8 @@ const useImageViewer = (images = [], initialIndex = 0) => {
   const canNavigate = images.length > 1;
 
   return {
-    currentIndex,
+    currentIndex: currentIndexRef.current,
     currentImage,
-    zoom,
-    position,
-    isDragging,
     nextImage,
     prevImage,
     goToImage,

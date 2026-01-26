@@ -64,16 +64,6 @@ const DestinationsSection = memo(() => {
               International
             </button>
           </div>
-          <Link
-            to="/contact"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-600 to-blue-600 text-white font-semibold rounded-full shadow-md hover:scale-105 transition-all duration-300"
-            aria-label="Contact Us"
-          >
-            Contact Us
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12H3" />
-            </svg>
-          </Link>
         </div>
 
         {/* Destinations Grid */}
@@ -147,8 +137,8 @@ const DestinationsSection = memo(() => {
           ))}
         </div>
 
-        {/* View All Button + Contact Us */}
-        <div className="text-center mt-10 flex flex-col sm:flex-row gap-4 justify-center items-center">
+        {/* View All Button */}
+        <div className="text-center mt-10">
           <Link
             to="/destinations"
             className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 rounded-full text-white font-semibold transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
@@ -156,16 +146,6 @@ const DestinationsSection = memo(() => {
             View All Destinations
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
-          </Link>
-          <Link
-            to="/contact"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-emerald-600 to-blue-600 text-white font-semibold rounded-full shadow-md hover:scale-105 transition-all duration-300"
-            aria-label="Contact Us"
-          >
-            Contact Us
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12H3" />
             </svg>
           </Link>
         </div>

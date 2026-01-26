@@ -10,18 +10,13 @@ import BlogCTA from './features/BlogCTA';
 import ReadingProgress from './content/ReadingProgress';
 import ErrorBoundary from '../ui/ErrorBoundary';
 
-// Helper function to generate slugified IDs from heading text
 const slugify = (text) => {
   if (!text) return 'section';
-
   return text
     .toLowerCase()
     .trim()
-    // Replace special characters with hyphens
     .replace(/[^\w\s-]/g, '')
-    // Replace multiple spaces/hyphens with single hyphen
     .replace(/[\s_-]+/g, '-')
-    // Remove leading/trailing hyphens
     .replace(/^-+|-+$/g, '');
 };
 
@@ -32,7 +27,6 @@ const BlogDetail = ({ blog, relatedBlogs, searchQuery = '' }) => {
   const [activeSection, setActiveSection] = useState('');
   const [showProgress, setShowProgress] = useState(false);
 
-  // Reading progress and active section tracking
   useEffect(() => {
     const updateReadingProgress = () => {
       const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
@@ -42,14 +36,11 @@ const BlogDetail = ({ blog, relatedBlogs, searchQuery = '' }) => {
         const progress = Math.round((windowScrollTop / totalHeight) * 100);
         setReadingProgress(Math.min(100, Math.max(0, progress)));
       }
-
-      // Hide progress bar when near top (less than 5% scroll)
       setShowProgress(windowScrollTop > window.innerHeight * 0.05);
     };
 
     const handleScroll = () => {
       updateReadingProgress();
-
       const sections = document.querySelectorAll('[data-section]');
       let currentSection = '';
 
@@ -65,14 +56,11 @@ const BlogDetail = ({ blog, relatedBlogs, searchQuery = '' }) => {
 
     window.addEventListener('scroll', handleScroll);
     updateReadingProgress();
-
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Generate table of contents from content with semantic IDs
   const generateTOC = (content) => {
     if (!content) return [];
-
     const headings = [];
     const parser = new DOMParser();
     const doc = parser.parseFromString(content, 'text/html');
@@ -81,17 +69,10 @@ const BlogDetail = ({ blog, relatedBlogs, searchQuery = '' }) => {
     headingElements.forEach((heading, index) => {
       const level = parseInt(heading.tagName.charAt(1));
       const text = heading.textContent.trim();
-
-      // Generate semantic ID from heading text
       const baseId = slugify(text);
       const id = baseId || `section-${index}`;
 
-      headings.push({
-        id,
-        text,
-        level,
-      });
-
+      headings.push({ id, text, level });
       heading.id = id;
       heading.setAttribute('data-section', id);
     });
@@ -118,31 +99,21 @@ const BlogDetail = ({ blog, relatedBlogs, searchQuery = '' }) => {
   const tocItems = generateTOC(blog.content);
   const readTimeText = blog.readTime ? `${blog.readTime} min read` : `${DEFAULT_READ_TIME} min read`;
 
-  // Generate JSON-LD structured data for SEO
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Article',
     headline: blog.title,
     description: blog.excerpt,
     image: blog.image,
-    author: {
-      '@type': 'Person',
-      name: blog.author,
-    },
+    author: { '@type': 'Person', name: blog.author },
     publisher: {
       '@type': 'Organization',
       name: 'SASA Travel',
-      logo: {
-        '@type': 'ImageObject',
-        url: `${window.location.origin}/sasa_logo.png`,
-      },
+      logo: { '@type': 'ImageObject', url: `${window.location.origin}/sasa_logo.png` },
     },
     datePublished: blog.date,
     dateModified: blog.date,
-    mainEntityOfPage: {
-      '@type': 'WebPage',
-      '@id': `${window.location.origin}/blogs/${blog.id}`,
-    },
+    mainEntityOfPage: { '@type': 'WebPage', '@id': `${window.location.origin}/blogs/${blog.id}` },
     articleSection: blog.category,
     keywords: blog.tags?.join(', '),
     wordCount: blog.readTime ? blog.readTime * 200 : DEFAULT_READ_TIME * 200,
@@ -161,52 +132,31 @@ const BlogDetail = ({ blog, relatedBlogs, searchQuery = '' }) => {
         <meta name="author" content={blog.author} />
         <link rel="canonical" href={`${window.location.origin}/blogs/${blog.id}`} />
       </Helmet>
-
-      {/* JSON-LD Structured Data for SEO */}
-      <script type="application/ld+json">
-        {JSON.stringify(jsonLd)}
-      </script>
-
+      <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
       {showProgress && <ReadingProgress progress={readingProgress} />}
-
       <ErrorBoundary>
         <article className="min-h-screen warm-cream">
           <BlogHeader blog={blog} />
-
           <div className="container mx-auto px-6 pb-16 pt-4">
             <div className="max-w-7xl mx-auto">
               <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
                 {tocItems.length > 0 && (
                   <aside className="hidden lg:block lg:col-span-1">
                     <div className="sticky top-28">
-                      <BlogTOC
-                        items={tocItems}
-                        activeSection={activeSection}
-                        readingProgress={readingProgress}
-                        title="Table of Contents"
-                        showProgress={true}
-                      />
+                      <BlogTOC items={tocItems} activeSection={activeSection} readingProgress={readingProgress} title="Table of Contents" showProgress={true} />
                     </div>
                   </aside>
                 )}
-
                 <main className={tocItems.length > 0 ? 'lg:col-span-3' : 'lg:col-span-4'}>
                   <header className="mb-8">
                     <div className="flex flex-wrap items-center gap-4 mb-6">
-                      <span className="px-4 py-2 bg-gradient-to-r from-cyan-100 to-blue-100 text-cyan-800 rounded-full text-sm font-semibold capitalize border border-cyan-200">
-                        {blog.category}
-                      </span>
-
+                      <span className="px-4 py-2 bg-gradient-to-r from-cyan-100 to-blue-100 text-cyan-800 rounded-full text-sm font-semibold capitalize border border-cyan-200">{blog.category}</span>
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-full flex items-center justify-center">
-                          <span className="text-white font-semibold text-sm">
-                            {blog.author?.charAt(0)?.toUpperCase()}
-                          </span>
+                          <span className="text-white font-semibold text-sm">{blog.author?.charAt(0)?.toUpperCase()}</span>
                         </div>
                         <div className="flex flex-col">
-                          <span className="text-sm font-medium text-slate-700">
-                            {blog.author}
-                          </span>
+                          <span className="text-sm font-medium text-slate-700">{blog.author}</span>
                           <div className="flex items-center gap-1 text-xs text-slate-500">
                             <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -216,30 +166,15 @@ const BlogDetail = ({ blog, relatedBlogs, searchQuery = '' }) => {
                         </div>
                       </div>
                     </div>
-
-                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-slate-800 mb-6 leading-tight">
-                      {blog.title}
-                    </h1>
-
-                    <p className="text-xl text-slate-600 mb-8 leading-relaxed max-w-4xl">
-                      {blog.excerpt}
-                    </p>
+                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-slate-800 mb-6 leading-tight">{blog.title}</h1>
+                    <p className="text-xl text-slate-600 mb-8 leading-relaxed max-w-4xl">{blog.excerpt}</p>
                   </header>
-
                   <div className="prose prose-lg max-w-none mb-12">
                     <BlogContent content={blog.content} searchQuery={searchQuery} />
                   </div>
-
-                  <BlogMeta
-                    author={blog.author}
-                    tags={blog.tags}
-                    date={blog.date}
-                  />
-
+                  <BlogMeta author={blog.author} tags={blog.tags} date={blog.date} />
                   <BlogAuthorBio author={blog.author} />
-
                   <BlogCTA />
-
                   <RelatedBlogs blogs={relatedBlogs} searchQuery={searchQuery} />
                 </main>
               </div>

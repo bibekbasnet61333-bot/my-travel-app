@@ -68,7 +68,6 @@ export const SOCIAL_LINKS = {
   TWITTER: import.meta.env.VITE_SOCIAL_TWITTER || '#',
   TIKTOK: import.meta.env.VITE_SOCIAL_TIKTOK || '#',
   YOUTUBE: import.meta.env.VITE_SOCIAL_YOUTUBE || '#',
-  VIBER: import.meta.env.VITE_SOCIAL_VIBER || '#',
   FACEBOOK_STORIES: import.meta.env.VITE_SOCIAL_FACEBOOK_STORIES || '#',
 };
 

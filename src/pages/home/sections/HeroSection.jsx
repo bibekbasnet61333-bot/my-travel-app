@@ -1,3 +1,4 @@
+
 import { memo } from 'react';
 import { Link } from 'react-router-dom';
 import AnimatedText from '../../../components/animations/AnimatedText';
@@ -22,11 +23,6 @@ const SocialIcon = ({ type, href, className }) => {
         <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
       </svg>
     ),
-    Viber: (
-      <svg className={className} fill="currentColor" viewBox="0 0 24 24">
-        <path d="M12 0C5.373 0 0 5.373 0 12c0 3.4 1.4 6.5 3.7 8.7l.4-.9 1.1-2.2-.5.2c-.3.1-.6.2-.9.2-.5 0-1-.3-1.3-.8l-1.1-1.6c-.3-.4-.4-.9-.3-1.4l.3-1.4c.1-.3.2-.6.3-.9l.4-1.4c.2-.7.6-1.3 1.1-1.8l1.1-1c.5-.4 1.1-.7 1.8-.8l1.4-.2c.3 0 .6-.1.9-.1 3 0 5.6 1.2 7.6 3.2l-1.4 1.4c-.4-.3-.9-.5-1.4-.5-.2 0-.4 0-.6.1-.2.1-.4.2-.6.4l-1.1 1.1c-.4.4-.5 1-.3 1.5l.5 1.4c.1.3.2.6.3.9l.3 1.4c.1.5 0 1.1-.3 1.5l-1.1 1.6c-.3.5-.8.8-1.3.8-.3 0-.6-.1-.9-.2l-.4.9C7.4 18.5 6 15.4 6 12c0-6.627 5.373-12 12-12 1.9 0 3.7.4 5.2 1.2l-1.2 1.2c-1.2-1.3-2.9-2.1-4.8-2.1zm.5 4.3c.7 0 1.3.6 1.3 1.3 0 .7-.6 1.3-1.3 1.3-.7 0-1.3-.6-1.3-1.3 0-.7.6-1.3 1.3-1.3zm4.5 6c.2 0 .4.1.5.2l-2.1 2.1c-.4-.8-.6-1.7-.6-2.6 0-2.5 2-4.5 4.5-4.5.9 0 1.8.2 2.6.6l-2.1 2.1c-.1-.2-.2-.4-.2-.6 0-.7.6-1.3 1.3-1.3.2 0 .4.1.6.2L15.8 6c-.7-.3-1.5-.5-2.3-.5-3 0-5.5 2.5-5.5 5.5 0 .8.2 1.6.5 2.3l-2 2c-.1-.2-.2-.4-.2-.6 0-.7.6-1.3 1.3-1.3.2 0 .4.1.6.2l-2.1 2.1c.3.7.8 1.3 1.4 1.7l-1.4 1.4c-.1-.1-.2-.1-.3-.2.1-.4.2-.8.2-1.3 0-2.5-2-4.5-4.5-4.5-.5 0-1 .1-1.4.3l-1.4-1.4c.2-.4.3-.9.3-1.4 0-2.5-2-4.5-4.5-4.5-.5 0-1 .1-1.4.3l-1.4-1.4c.2-.4.3-.9.3-1.4C1.5 2.5 4 0 6.5 0c.5 0 1 .1 1.4.3l1.4-1.4C8.5.6 7.8.3 7 .3c-2.5 0-4.5 2-4.5 4.5 0 .5.1 1 .3 1.4l1.4-1.4c-.2-.4-.3-.9-.3-1.4C4 1.5 6.5 0 9 0c2.5 0 4.5 2 4.5 4.5 0 .5-.1 1-.3 1.4l1.4 1.4c.4-.2.9-.3 1.4-.3 2.5 0 4.5 2 4.5 4.5 0 .5-.1 1-.3 1.4l1.4 1.4c.4-.2.9-.3 1.4-.3 2.5 0 4.5 2 4.5 4.5 0 2.5-2 4.5-4.5 4.5-.5 0-1-.1-1.4-.3l-1.4 1.4c.2.4.3.9.3 1.4 0 2.5-2 4.5-4.5 4.5-.5 0-1-.1-1.4-.3l-1.4 1.4c.2.4.3.9.3 1.4 0 2.5-2 4.5-4.5 4.5z"/>
-      </svg>
-    ),
     YouTube: (
       <svg className={className} fill="currentColor" viewBox="0 0 24 24">
         <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
@@ -49,14 +45,6 @@ const SocialIcon = ({ type, href, className }) => {
       {icons[type]}
     </a>
   );
-};
-
-// Scroll to section function
-const scrollToSection = (sectionId) => {
-  const element = document.getElementById(sectionId);
-  if (element) {
-    element.scrollIntoView({ behavior: 'smooth' });
-  }
 };
 
 const HeroSection = memo(() => (
@@ -95,20 +83,22 @@ const HeroSection = memo(() => (
       </div>
 
       <div className="flex flex-col sm:flex-row gap-4 justify-center">
-        <AnimatedText
-          text="Start Your Journey"
-          className="inline-block px-8 py-4 bg-gradient-to-r from-[#0f4c5c] to-[#1a6b7f] hover:from-[#1a6b7f] hover:to-[#0f4c5c] rounded-full text-white text-base font-semibold hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl cursor-pointer"
-          type="scale"
-          delay={1200}
-          onClick={() => scrollToSection('destinations')}
-        />
-        <AnimatedText
-          text="Explore Destinations"
-          className="inline-block px-8 py-4 border-2 border-[#0f4c5c] hover:border-[#1a6b7f] rounded-full text-[#0f4c5c] hover:bg-[#0f4c5c]/5 text-base font-semibold transition-all duration-300 cursor-pointer"
-          type="scale"
-          delay={1300}
-          onClick={() => scrollToSection('destinations')}
-        />
+        <Link to="/contact">
+          <AnimatedText
+            text="Start Your Journey"
+            className="inline-block px-8 py-4 bg-gradient-to-r from-[#0f4c5c] to-[#1a6b7f] hover:from-[#1a6b7f] hover:to-[#0f4c5c] rounded-full text-white text-base font-semibold hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl cursor-pointer"
+            type="scale"
+            delay={1200}
+          />
+        </Link>
+        <Link to="/destinations?category=international">
+          <AnimatedText
+            text="Explore Destinations"
+            className="inline-block px-8 py-4 border-2 border-[#0f4c5c] hover:border-[#1a6b7f] rounded-full text-[#0f4c5c] hover:bg-[#0f4c5c]/5 text-base font-semibold transition-all duration-300 cursor-pointer"
+            type="scale"
+            delay={1300}
+          />
+        </Link>
       </div>
 
       <div className="mt-12">
@@ -135,7 +125,6 @@ const HeroSection = memo(() => (
             <SocialIcon type="Twitter" href={SOCIAL_LINKS.TWITTER} className="w-7 h-7 text-[#1DA1F2]" />
             <SocialIcon type="TikTok" href={SOCIAL_LINKS.TIKTOK} className="w-7 h-7" />
             <SocialIcon type="Facebook" href={SOCIAL_LINKS.FACEBOOK} className="w-7 h-7 text-[#1877F2]" />
-            <SocialIcon type="Viber" href={SOCIAL_LINKS.VIBER} className="w-7 h-7 text-[#665CAC]" />
             <SocialIcon type="YouTube" href={SOCIAL_LINKS.YOUTUBE} className="w-7 h-7 text-[#FF0000]" />
             <SocialIcon type="Instagram" href={SOCIAL_LINKS.INSTAGRAM} className="w-7 h-7 text-[#E4405F]" />
           </div>
@@ -148,7 +137,12 @@ const HeroSection = memo(() => (
       className="absolute bottom-6 left-1/2 transform -translate-x-1/2 text-3xl text-[#0f4c5c] hover:text-[#1a6b7f] animate-bounce cursor-pointer transition-colors duration-300"
       type="fadeIn"
       delay={1800}
-      onClick={() => scrollToSection('destinations')}
+      onClick={() => {
+        const element = document.getElementById('destinations');
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }}
     />
   </section>
 ));

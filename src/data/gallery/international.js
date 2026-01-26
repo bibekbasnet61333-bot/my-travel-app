@@ -1,8 +1,6 @@
 // International Gallery Data - Destinations worldwide
 // Using simple image imports without complex directives
 
-import { createResponsiveImage } from '../../utils/galleryImageUtils';
-
 // Australia images
 import australia1 from '../../assets/gallary/austrila-gallary/austrila-gallary-1.avif';
 import australia2 from '../../assets/gallary/austrila-gallary/austrila-gallary-2.avif';
@@ -89,17 +87,6 @@ const chinaImages = [china1, china2, china3, china4, china5, china6, china7, chi
 const dubaiImages = [dubai1, dubai2, dubai3, dubai4, dubai5, dubai6, dubai7, dubai8, dubai9, dubai10, dubai11];
 const turkeyImages = [turkey1, turkey2, turkey3, turkey4, turkey5, turkey6, turkey7, turkey8, turkey9, turkey10, turkey11];
 const vietnamImages = [vietnam1, vietnam2, vietnam3, vietnam4, vietnam5, vietnam6, vietnam7, vietnam8, vietnam9, vietnam10, vietnam11];
-
-// Theme configuration for international destinations
-export const internationalTheme = {
-  primaryGradientClass: 'from-blue-500 to-cyan-500',
-  secondaryGradientClass: 'from-cyan-500 to-blue-600',
-  overlayGradient: 'from-blue-900/80 via-cyan-900/70 to-indigo-900/75',
-  titleGradient: 'linear-gradient(to right, #3b82f6, #06b6d4)',
-  accentColor: '#0ea5e9',
-  tabActiveClass: 'bg-blue-500 text-white',
-  tabInactiveClass: 'text-stone-600 hover:bg-blue-50'
-};
 
 // International destinations gallery data
 export const internationalDestinations = [
@@ -195,13 +182,33 @@ export const internationalDestinations = [
       'https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=800&h=600&fit=crop',
       'https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?w=800&h=600&fit=crop'
     ]
+  },
+  {
+    id: 'thailand',
+    name: 'Thailand',
+    slug: 'thailand',
+    country: 'Thailand',
+    category: 'international',
+    description: 'Land of Smiles - Bangkok temples, Phuket beaches, and Chiang Mai culture',
+    thumbnail: 'https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?w=600&h=400&fit=crop',
+    heroImage: 'https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?q=80&w=2000&auto=format&fit=crop',
+    imageCount: 8,
+    images: [
+      'https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?w=800&h=600&fit=crop',
+      'https://images.unsplash.com/photo-1563492065599-3520f775eeed?w=800&h=600&fit=crop',
+      'https://images.unsplash.com/photo-1548586196-aa5803b77379?w=800&h=600&fit=crop',
+      'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=800&h=600&fit=crop',
+      'https://images.unsplash.com/photo-1559291001-693ae917830e?w=800&h=600&fit=crop',
+      'https://images.unsplash.com/photo-1555400038-63f5ba517a47?w=800&h=600&fit=crop',
+      'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&h=600&fit=crop',
+      'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&h=600&fit=crop'
+    ]
   }
 ];
 
 // Export for use in gallery data
 export const internationalGalleryData = {
-  destinations: internationalDestinations,
-  theme: internationalTheme
+  destinations: internationalDestinations
 };
 
 export default internationalGalleryData;
