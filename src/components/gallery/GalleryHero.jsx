@@ -1,7 +1,7 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, memo } from 'react';
 import { motion } from 'framer-motion';
 import { getThemeByCategory, GALLERY_HERO_IMAGES } from '../../data/gallery';
-import GalleryHeroSkeleton from './GalleryHeroSkeleton';
+import GallerySkeleton from './GallerySkeleton';
 
 const GalleryHero = ({ category, isLoading }) => {
   // Get theme for current category
@@ -26,7 +26,7 @@ const GalleryHero = ({ category, isLoading }) => {
 
   // Show loading skeleton
   if (isLoading) {
-    return <GalleryHeroSkeleton />;
+    return <GallerySkeleton variant="hero" />;
   }
 
   // Hero content animation variants
@@ -50,7 +50,11 @@ const GalleryHero = ({ category, isLoading }) => {
   };
 
   return (
-    <section className="relative h-[50vh] md:h-[60vh] overflow-hidden">
+    <motion.section
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.4 }}
+      className="relative h-[50vh] md:h-[60vh] overflow-hidden">
       {/* Background Image with Overlay */}
       <motion.div
         initial={{ opacity: 0, scale: 1.1 }}
@@ -107,9 +111,9 @@ const GalleryHero = ({ category, isLoading }) => {
           />
         </svg>
       </motion.div>
-    </section>
+    </motion.section>
   );
 };
 
-export default GalleryHero;
+export default memo(GalleryHero);
 

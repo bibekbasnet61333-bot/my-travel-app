@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import PropTypes from 'prop-types';
 import { GALLERY_CATEGORIES, GALLERY_TABS } from '../../data/gallery/galleryConfig';
 
-const GalleryTabs = ({ activeTab, onTabChange, theme }) => {
+const GalleryTabs = memo(function GalleryTabs({ activeTab, onTabChange, theme }) {
   // Use GALLERY_CATEGORIES for category labels
   const tabs = useMemo(() => {
     return GALLERY_TABS.map(tab => ({
@@ -41,7 +41,7 @@ const GalleryTabs = ({ activeTab, onTabChange, theme }) => {
       </div>
     </div>
   );
-};
+});
 
 GalleryTabs.propTypes = {
   activeTab: PropTypes.string.isRequired,
@@ -51,5 +51,5 @@ GalleryTabs.propTypes = {
   })
 };
 
-export default memo(GalleryTabs);
+export default GalleryTabs;
 

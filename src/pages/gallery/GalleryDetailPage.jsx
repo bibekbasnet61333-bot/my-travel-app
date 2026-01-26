@@ -3,10 +3,9 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
 import ImageViewer from '../../components/gallery/ImageViewer';
-import GalleryDetailPageSkeleton from '../../components/gallery/GalleryDetailPageSkeleton';
+import GallerySkeleton from '../../components/gallery/GallerySkeleton';
 import { getDestinationBySlug, getThemeByCategory } from '../../data/gallery';
-
-const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=1200&auto=format&fit=crop';
+import { getImageSrc } from '../../utils/galleryImageUtils';
 
 const GalleryDetailPage = () => {
   const { slug } = useParams();
@@ -17,13 +16,13 @@ const GalleryDetailPage = () => {
   const [isViewerOpen, setIsViewerOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Track failed images with a Set stored in state for proper re-renders
+  const [failedImages, setFailedImages] = useState(() => new Set());
+
   // Refs for values needed across effects
   const destinationRef = useRef(null);
   const comingSoonRef = useRef(false);
   const triggerRef = useRef(null);
-
-  // Image error states - track which images failed to load
-  const imageErrorRef = useRef(new Set());
 
   // Memo hooks
   const destination = useMemo(() => {
@@ -59,24 +58,27 @@ const GalleryDetailPage = () => {
     }
   }, [slug, isLoading, navigate]);
 
-  // Helper to get image source with fallback
-  const getImageSrc = useCallback((image, index) => {
-    if (typeof image === 'string') {
-      if (imageErrorRef.current.has(index)) {
-        return FALLBACK_IMAGE;
-      }
-      return image;
-    }
-    return image?.src || FALLBACK_IMAGE;
+  // Handle image error - properly update state without force re-renders
+  const handleImageError = useCallback((index) => {
+    setFailedImages(prev => {
+      const next = new Set(prev);
+      next.add(index);
+      return next;
+    });
   }, []);
 
-  // Handle image error
-  const handleImageError = useCallback((index) => {
-    imageErrorRef.current.add(index);
-    // Force re-render to update the image source
-    setIsLoading(prev => !prev);
-    setIsLoading(prev => !prev);
-  }, []);
+  // Check if image has failed
+  const hasImageFailed = useCallback((index) => {
+    return failedImages.has(index);
+  }, [failedImages]);
+
+  // Get image source with fallback - memoized for performance
+  const getImageWithFallback = useCallback((image, index) => {
+    if (hasImageFailed(index)) {
+      return 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=1200&auto=format&fit=crop';
+    }
+    return getImageSrc(image);
+  }, [hasImageFailed]);
 
   // Callbacks - stable with empty deps
   const handleImageClick = useCallback((index, e) => {
@@ -105,7 +107,7 @@ const GalleryDetailPage = () => {
 
   // Early returns AFTER all hooks
   if (isLoading) {
-    return <GalleryDetailPageSkeleton />;
+    return <GallerySkeleton variant="detail-page" />;
   }
 
   if (!destination) {
@@ -141,7 +143,7 @@ const GalleryDetailPage = () => {
         <img
           src={heroImage}
           alt={`${name} hero image`}
-          fetchpriority="high"
+          fetchPriority="high"
           className="absolute inset-0 w-full h-full object-cover"
         />
         <div className="relative z-20 h-full flex flex-col items-center justify-center text-white px-6">
@@ -227,7 +229,7 @@ const GalleryDetailPage = () => {
                   aria-label={`Photo ${index + 1} of ${imageCount} in ${name} gallery`}
                 >
                   {/* Error indicator */}
-                  {imageErrorRef.current.has(index) && (
+                  {hasImageFailed(index) && (
                     <div className="absolute inset-0 flex items-center justify-center z-10">
                       <div className="text-center text-gray-500">
                         <svg className="w-6 h-6 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -238,15 +240,15 @@ const GalleryDetailPage = () => {
                     </div>
                   )}
                   <img
-                    src={getImageSrc(image, index)}
+                    src={getImageWithFallback(image, index)}
                     srcSet={typeof image === 'string' ? undefined : image.srcSet}
                     sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
                     alt={`${name} photo ${index + 1}`}
                     loading={index < 2 ? 'eager' : 'lazy'}
-                    fetchpriority={index < 2 ? 'high' : 'auto'}
+                    fetchPriority={index < 2 ? 'high' : 'auto'}
                     decoding="async"
                     onError={() => handleImageError(index)}
-                    className={`w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ${imageErrorRef.current.has(index) ? 'opacity-50' : ''}`}
+                    className={`w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ${hasImageFailed(index) ? 'opacity-50' : ''}`}
                   />
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
                 </motion.button>

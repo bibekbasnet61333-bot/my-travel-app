@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import ItineraryTab from './ItineraryTab';
 import InclusionsTab from './InclusionsTab';
 import DestinationContactForm from './DestinationContactForm';
-import { parseGradientToStyle } from '../../utils/gradientUtils';
 
 const TABS = [
   { id: 'itinerary', label: 'Itinerary' },
@@ -77,8 +76,6 @@ const DestinationTabbedContent = ({
     }
   };
 
-  const tabGradientStyle = parseGradientToStyle(t.primaryGradientClass);
-
   return (
     <div className={`grid grid-cols-1 ${gridCols} gap-8 items-start`}>
       {/* Left Side - Tab Content */}
@@ -119,7 +116,6 @@ const DestinationTabbedContent = ({
                         ? t.tabActiveClass + ' shadow-md'
                         : t.tabInactiveClass
                     }`}
-                    style={activeTab === tab.id ? tabGradientStyle : {}}
                   >
                     {tab.label}
                   </button>

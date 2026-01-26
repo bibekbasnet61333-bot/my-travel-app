@@ -80,11 +80,13 @@ export default function Navbar() {
       >
         <nav className="container mx-auto px-4 py-4">
           <ul className="space-y-4">
-            {LINKS_STATIC.map((l) =>
-              l.key === 'destinations'
-                ? <DestinationsDropdown key={l.key} mobile closeMenu={close} />
-                : <li key={l.key}><NavMenuItem to={l.to} label={l.label} onClick={close} /></li>
-            )}
+            {LINKS_STATIC.map((l) => {
+              if (l.key === 'destinations') {
+                // For mobile, DestinationsDropdown now returns a fragment of <li> elements
+                return <DestinationsDropdown key={l.key} mobile closeMenu={close} />;
+              }
+              return <li key={l.key}><NavMenuItem to={l.to} label={l.label} onClick={close} /></li>;
+            })}
           </ul>
         </nav>
       </div>

@@ -1,6 +1,8 @@
 // National Gallery Data - Nepal Destinations
 // Nepal's stunning destinations from Himalayas to ancient temples
 
+import { createResponsiveImage } from '../../utils/galleryImageUtils';
+
 // Theme configuration for national destinations (Nepal)
 export const nationalTheme = {
   primaryGradientClass: 'from-amber-500 to-orange-500',
@@ -10,17 +12,6 @@ export const nationalTheme = {
   accentColor: '#d97706',
   tabActiveClass: 'bg-amber-500 text-white',
   tabInactiveClass: 'text-stone-600 hover:bg-amber-50'
-};
-
-// Helper to create srcset object for Unsplash URLs
-// Returns { src: originalUrl, srcSet: "url?w=400 400w, url?w=800 800w" }
-const createResponsiveImage = (url) => {
-  // Remove existing query params to get base URL
-  const baseUrl = url.split('?')[0];
-  return {
-    src: `${baseUrl}?w=800&auto=format&fit=crop`,
-    srcSet: `${baseUrl}?w=400&auto=format&fit=crop 400w, ${baseUrl}?w=800&auto=format&fit=crop 800w`
-  };
 };
 
 // National destinations gallery data (Nepal)

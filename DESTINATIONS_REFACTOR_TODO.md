@@ -1,72 +1,129 @@
-# Destinations Section Refactoring - Progress Tracker
+# Destinations Refactoring - Implementation TODO
 
-## Phase 1: Use Existing Hook (COMPLETED)
-- [x] 1.1 Enhanced `useDestinationPage.js` hook with proper handlers
-- [x] 1.2 Updated `China.jsx` to use hook
-- [x] 1.3 Updated `Bali.jsx` to use hook
-- [x] 1.4 Updated `Thailand.jsx` to use hook
-- [x] 1.5 Updated `Vietnam.jsx` to use hook
-- [x] 1.6 Updated `Dubai.jsx` to use hook
-- [x] 1.7 Updated `Australia.jsx` to use hook
-- [x] 1.8 Updated `Turkey.jsx` to use hook
-- [x] 1.9 Updated `Japan.jsx` to use hook
+## Phase 1: Cleanup (Dead Code Removal) ✅ COMPLETED
 
-## Phase 2: Consolidate Tabbed Components (COMPLETED)
-- [x] 2.1 Merged `DestinationTabbedContent` and `DestinationTabbedContentWithSidebar`
-- [x] 2.2 Added `sidebarSize` prop for different layouts
-- [x] 2.3 All country pages now use single component
+### 1.1 Remove Unused Imports & Code
+- [x] `DestinationTabbedContent.jsx` - Remove unused `parseGradientToStyle` import
+- [ ] `useDestinationPage.js` - Clean up unused code (optional)
+- [ ] All country pages - Remove unused props (tourTitle when not applicable) - NOW USING TEMPLATE
 
-## Phase 3: Remove Dead Code (COMPLETED)
-- [x] 3.1 Deleted `DestinationDetail.jsx` (~400 lines dead code)
-- [x] 3.2 Removed unused route from `App.jsx`
-- [x] 3.3 Deleted `DestinationTabbedContentWithSidebar.jsx` (merged)
-- [x] 3.4 Updated `App.jsx` to use single ScrollProgress component
+### 1.2 Clean Up Redundant State
+- [ ] Remove duplicate modal state in country pages (use hook only) - NOW USING TEMPLATE
 
-## Phase 4: Performance & UX (BUILD VERIFIED)
-- [x] 4.1 Build successful - all 2330 modules transformed
-- [x] 4.2 Removed duplicate modal state from 8 country pages
-- [x] 4.3 All country pages use memo for performance
+---
 
-## Phase 5: Code Quality (COMPLETED)
-- [x] 5.1 All country pages use `memo()` for React.memo optimization
-- [x] 5.2 Removed unused imports
-- [x] 5.3 Proper hook usage with useCallback and useMemo
+## Phase 2: Create Unified Components ✅ COMPLETED
 
-## Summary of Changes
+### 2.1 Create BackgroundElements Component
+- [x] Extract animated background from country pages
+- [x] Make theme-configurable
+- [x] Add to `/components/shared/`
 
-### Lines Reduced:
-- `DestinationDetail.jsx`: DELETED (~400 lines)
-- `DestinationTabbedContentWithSidebar.jsx`: DELETED (~80 lines)
-- 8 country pages: Reduced from ~120 lines each to ~80 lines each
-- `App.jsx`: Removed unused import and route
+### 2.2 Create DestinationTemplate Page
+- [x] Create `/pages/DestinationTemplate.jsx`
+- [x] Accept config object for all destination-specific data
+- [x] Replace all 8 country page implementations
 
-### Total Code Reduction: ~600+ lines
+### 2.3 Refactor useDestination Hook
+- [ ] Rename to `useDestination` (shorter, cleaner) - OPTIONAL
+- [ ] Remove unused computed values - OPTIONAL
 
-### Files Modified:
-1. `src/hooks/useDestinationPage.js` - Enhanced with full functionality
-2. `src/pages/china/China.jsx` - Uses hook, memo, unified components
-3. `src/pages/bali/Bali.jsx` - Uses hook, memo, unified components
-4. `src/pages/thailand/Thailand.jsx` - Uses hook, memo, unified components
-5. `src/pages/vietnam/Vietnam.jsx` - Uses hook, memo, unified components
-6. `src/pages/dubai/Dubai.jsx` - Uses hook, memo, unified components
-7. `src/pages/australia/Australia.jsx` - Uses hook, memo, unified components
-8. `src/pages/turkey/Turkey.jsx` - Uses hook, memo, unified components
-9. `src/pages/japan/Japan.jsx` - Uses hook, memo, unified components
-10. `src/components/destination/DestinationTabbedContent.jsx` - Unified component
-11. `src/App.jsx` - Removed unused route and import
+---
 
-### Deleted Files:
-1. `src/pages/DestinationDetail.jsx` - Dead code
-2. `src/components/destination/DestinationTabbedContentWithSidebar.jsx` - Merged
+## Phase 3: Refactor Country Pages ✅ COMPLETED
 
-### Build Status: SUCCESS
-```
-✓ 2330 modules transformed
-✓ built in 2.10s
-```
+### 3.1 Refactor Individual Pages to Use Template
+- [x] Bali.jsx - Convert to use template
+- [x] Japan.jsx - Convert to use template
+- [x] Thailand.jsx - Convert to use template
+- [x] Vietnam.jsx - Convert to use template
+- [x] Dubai.jsx - Convert to use template
+- [x] Australia.jsx - Convert to use template
+- [x] Turkey.jsx - Convert to use template
+- [x] China.jsx - Convert to use template
 
-### No Breaking Changes:
-- All existing routes work
-- All UI/UX unchanged
-- All functionality preserved
+### 3.2 Consolidate Data Files
+- [x] Create `/data/destinations/detail/` directory structure
+- [ ] Move individual country configs to detail folder (already there)
+- [ ] Create unified export from `/data/destinations/index.js`
+
+---
+
+## Phase 4: Dynamic Routing (Optional Enhancement)
+
+### 4.1 Add Dynamic Route
+- [ ] Update App.jsx with `/destinations/:countryId` route
+- [ ] Create dynamic page loader
+- [ ] Handle invalid country IDs
+
+---
+
+## Phase 5: Testing & Verification
+
+### 5.1 Visual Testing
+- [ ] Verify all destination pages render correctly
+- [ ] Check modal functionality on all pages
+- [ ] Test contact forms
+- [ ] Verify animations work
+
+### 5.2 Performance Testing
+- [ ] Verify bundle size reduction
+- [ ] Check lazy loading works
+- [ ] Test route transitions
+
+---
+
+## Quick Wins (Start Here)
+
+1. **Remove unused import in DestinationTabbedContent.jsx**
+   - File: `src/components/destination/DestinationTabbedContent.jsx`
+   - Line 4: Remove `import { parseGradientToStyle }`
+
+2. **Clean up useDestinationPage.js**
+   - Remove unused `hasPolicies` computed value
+   - Or add usage somewhere
+
+3. **Extract BackgroundElements component**
+   - Create reusable background animation
+   - Reduce code duplication
+
+---
+
+## File Reference
+
+### Files to CREATE:
+- `/src/components/shared/BackgroundElements.jsx`
+- `/src/pages/DestinationTemplate.jsx`
+- `/src/hooks/useDestination.js` (refactored)
+
+### Files to MODIFY:
+- `/src/components/destination/DestinationTabbedContent.jsx`
+- `/src/hooks/useDestinationPage.js`
+- All `/src/pages/*/[Country].jsx` files
+
+### Files to DELETE (after verification):
+- Legacy country page files (after migration)
+
+---
+
+## Estimated Time
+
+| Phase | Effort |
+|-------|--------|
+| Phase 1: Cleanup | 30 minutes |
+| Phase 2: Components | 3 hours |
+| Phase 3: Refactor Pages | 2 hours |
+| Phase 4: Dynamic Routing | 1 hour |
+| Phase 5: Testing | 1 hour |
+| **Total** | **~8 hours** |
+
+---
+
+## Success Criteria
+
+- [ ] All 8 destination pages work identically
+- [ ] Code duplication reduced by ~80%
+- [ ] Adding new destination requires only data file
+- [ ] Bundle size reduced by ~10%
+- [ ] No TypeScript/lint errors introduced
 

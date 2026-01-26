@@ -176,8 +176,7 @@ const useImageViewer = (images = [], initialIndex = 0) => {
     handleTouchStart,
     handleTouchMove,
     handleTouchEnd,
-    canNavigate,
-    imageRef
+    canNavigate
   };
 };
 

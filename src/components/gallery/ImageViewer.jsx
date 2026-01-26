@@ -2,20 +2,7 @@ import React, { memo, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PropTypes from 'prop-types';
 import useImageViewer from '../../hooks/gallery/useImageViewer';
-
-const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=1200&auto=format&fit=crop';
-
-// Helper to get src from image (handles both string and responsive image object)
-const getImageSrc = (image) => {
-  if (typeof image === 'string') return image;
-  return image?.src || image;
-};
-
-// Helper to get srcset from image
-const getImageSrcset = (image) => {
-  if (typeof image === 'string') return undefined;
-  return image?.srcset;
-};
+import { getImageSrc, getImageSrcset, GALLERY_FALLBACK_IMAGE } from '../../utils/galleryImageUtils';
 
 const ImageViewer = ({ images, initialIndex = 0, isOpen, onClose }) => {
   const containerRef = useRef(null);
@@ -51,7 +38,7 @@ const ImageViewer = ({ images, initialIndex = 0, isOpen, onClose }) => {
   // Get current image source with fallback
   const getCurrentImageSrc = useCallback(() => {
     if (failedImagesRef.current.has(currentIndex)) {
-      return FALLBACK_IMAGE;
+      return GALLERY_FALLBACK_IMAGE;
     }
     return getImageSrc(currentImage);
   }, [currentIndex, currentImage]);
@@ -251,7 +238,7 @@ const ImageViewer = ({ images, initialIndex = 0, isOpen, onClose }) => {
             onError={handleImageError}
             className="max-w-full max-h-full object-contain select-none"
             draggable={false}
-            fetchpriority="high"
+            fetchPriority="high"
             loading="eager"
             decoding="async"
             initial={{ opacity: 0, scale: 0.9 }}

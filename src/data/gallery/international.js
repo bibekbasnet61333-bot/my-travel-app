@@ -1,6 +1,8 @@
 // International Gallery Data - Destinations worldwide
 // Using simple image imports without complex directives
 
+import { createResponsiveImage } from '../../utils/galleryImageUtils';
+
 // Australia images
 import australia1 from '../../assets/gallary/austrila-gallary/austrila-gallary-1.avif';
 import australia2 from '../../assets/gallary/austrila-gallary/austrila-gallary-2.avif';
