@@ -126,14 +126,19 @@ const AnimatedStat = memo(({ stat, index }) => {
     <div
       ref={elementRef}
       role="listitem"
-      className={`bg-white rounded-lg p-6 shadow-sm border border-slate-200 transition-all duration-500 ${
+      className={`rounded-xl p-5 sm:p-6 transition-all duration-500 ${
         isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
       }`}
+      style={{ 
+        background: 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(240,253,250,0.9) 100%)',
+        boxShadow: '0 4px 15px -3px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1)',
+        border: '1px solid rgba(226, 232, 240, 0.8)'
+      }}
     >
-      <div className="text-3xl md:text-4xl font-bold mb-2" style={{ color: colors.primary[600] }} aria-label={`${stat.label}: ${stat.value}`}>
+      <div className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2" style={{ color: colors.primary[600] }} aria-label={`${stat.label}: ${stat.value}`}>
         {displayValue}
       </div>
-      <div className="text-sm md:text-base text-slate-600">
+      <div className="text-sm sm:text-base text-slate-600 font-medium">
         {stat.label}
       </div>
     </div>
@@ -145,13 +150,16 @@ AnimatedStat.displayName = 'AnimatedStat';
 const WhyChooseUsPackages = memo(() => {
   return (
     <section
-      className="py-12 md:py-16 px-4 sm:px-6 bg-white"
+      className="py-10 sm:py-14 px-3 sm:px-6 bg-gradient-to-b from-slate-50 via-blue-50 to-emerald-50"
       aria-labelledby="why-choose-us-title"
     >
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-10">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 text-slate-800">
+        <div className="text-center mb-8 sm:mb-10">
+          <h2 
+            id="why-choose-us-title"
+            className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 sm:mb-3 text-[#0f4c5c]"
+          >
             Why Choose Our Travel Packages
           </h2>
           <p className="text-slate-600 text-sm sm:text-base max-w-2xl mx-auto">
@@ -161,7 +169,7 @@ const WhyChooseUsPackages = memo(() => {
 
         {/* Points Grid */}
         <div
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-10 sm:mb-12"
           role="list"
           aria-label="Why choose us features"
         >
@@ -169,17 +177,24 @@ const WhyChooseUsPackages = memo(() => {
             <div
               key={index}
               role="listitem"
-              className="text-center p-6 rounded-xl bg-slate-50 border border-slate-100 hover:shadow-md hover:border-slate-200 transition-all duration-300"
+              className="text-center p-4 sm:p-6 rounded-xl transition-all duration-300 hover:shadow-lg"
+              style={{ 
+                background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(240,253,250,0.95) 100%)',
+                border: '1px solid rgba(226, 232, 240, 0.8)'
+              }}
             >
-              <h3 className="text-lg font-semibold mb-3 text-slate-800">{point.title}</h3>
-              <p className="text-slate-600 leading-relaxed text-sm">{point.description}</p>
+              <div className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-3 sm:mb-4 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #fbeee6 0%, #e7eafc 100%)' }}>
+                <span className="text-[#b85c38] font-bold text-sm sm:text-base">✓</span>
+              </div>
+              <h3 className="text-base sm:text-lg font-bold mb-2 text-[#b85c38]">{point.title}</h3>
+              <p className="text-slate-600 leading-relaxed text-xs sm:text-sm font-medium">{point.description}</p>
             </div>
           ))}
         </div>
 
         {/* Stats */}
         <div
-          className="grid grid-cols-2 lg:grid-cols-4 gap-6 text-center mb-12"
+          className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 text-center mb-10 sm:mb-12"
           role="list"
           aria-label="Our statistics"
         >
@@ -190,11 +205,11 @@ const WhyChooseUsPackages = memo(() => {
       </div>
 
       {/* Preferred Airline Partners */}
-      <div className="w-full py-8 bg-slate-50 border-t border-slate-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <h3 className="text-lg md:text-xl font-bold mb-6 text-slate-800 text-center">Preferred Airline Partners</h3>
+      <div className="w-full py-8 sm:py-10" style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(240,253,250,0.5) 50%, rgba(255,255,255,0) 100%)' }}>
+        <div className="max-w-6xl mx-auto px-3 sm:px-6">
+          <h3 className="text-lg sm:text-xl font-bold mb-6 sm:mb-8 text-[#0f4c5c] text-center">Preferred Airline Partners</h3>
           <div
-            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4"
+            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4"
             role="list"
             aria-label="Airline partners"
           >
@@ -202,12 +217,16 @@ const WhyChooseUsPackages = memo(() => {
               <div
                 key={index}
                 role="listitem"
-                className="rounded-lg p-4 border border-slate-200 bg-white transition-all duration-300 hover:shadow-md hover:scale-105 flex items-center justify-center"
+                className="rounded-lg p-3 sm:p-4 transition-all duration-300 hover:shadow-md hover:scale-105 flex items-center justify-center"
+                style={{ 
+                  background: 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(240,253,250,0.9) 100%)',
+                  border: '1px solid rgba(226, 232, 240, 0.8)'
+                }}
               >
                 {airline.fallback ? (
-                  <span className="text-slate-600 text-sm font-medium text-center">{airline.fallback}</span>
+                  <span className="text-slate-700 text-xs sm:text-sm font-bold text-center">{airline.fallback}</span>
                 ) : (
-                  <span className="text-slate-600 text-sm font-medium text-center">{airline.name}</span>
+                  <span className="text-slate-600 text-xs sm:text-sm font-medium text-center">{airline.name}</span>
                 )}
               </div>
             ))}

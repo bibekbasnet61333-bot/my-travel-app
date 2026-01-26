@@ -13,7 +13,7 @@ const GalleryTabs = memo(function GalleryTabs({ activeTab, onTabChange, theme })
   }, []);
 
   return (
-    <div className="flex justify-center mb-8">
+    <div className="flex justify-center mb-8" role="tablist" aria-label="Gallery categories">
       <div
         className="inline-flex p-2 rounded-full shadow-lg"
         style={{ backgroundColor: 'rgba(255,255,255,0.95)' }}
@@ -33,7 +33,11 @@ const GalleryTabs = memo(function GalleryTabs({ activeTab, onTabChange, theme })
               backgroundColor: activeTab === tab.id ? theme.accentColor : 'transparent',
               color: activeTab === tab.id ? 'white' : undefined
             }}
-            aria-pressed={activeTab === tab.id}
+            role="tab"
+            aria-selected={activeTab === tab.id}
+            aria-controls={`gallery-${tab.id}`}
+            tabIndex={activeTab === tab.id ? 0 : -1}
+            id={`tab-${tab.id}`}
           >
             {tab.label}
           </motion.button>

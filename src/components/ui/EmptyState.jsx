@@ -9,7 +9,7 @@ const EmptyState = ({
   className = ''
 }) => {
   return (
-    <div className={`text-center py-16 ${className}`}>
+    <div className={`text-center py-16 ${className}`} role="status" aria-live="polite">
       <div className="bg-gray-100 rounded-2xl p-12 max-w-md mx-auto">
         {Icon && (
           <div className="mb-6">

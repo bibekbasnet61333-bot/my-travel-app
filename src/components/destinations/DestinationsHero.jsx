@@ -78,7 +78,7 @@ function DestinationsHero({ category, onCategoryChange }) {
                   : 'bg-transparent text-white border-white/60 hover:bg-white hover:text-[#0f4c5c] hover:border-white'
               } focus:outline-none focus:ring-2 focus:ring-white/50`}
             >
-              {cat === 'local' ? 'Nepal' : cat.charAt(0).toUpperCase() + cat.slice(1)}
+              {cat === 'local' ? 'Nepal' : cat === 'combo' ? 'Combo Tours' : cat.charAt(0).toUpperCase() + cat.slice(1)}
             </button>
           ))}
         </div>

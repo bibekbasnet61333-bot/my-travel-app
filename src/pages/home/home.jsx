@@ -1,4 +1,5 @@
 import React from 'react';
+import { Helmet } from 'react-helmet-async';
 import ScrollProgress from '../../components/ui/ScrollProgress';
 import ErrorBoundary from '../../components/ui/ErrorBoundary';
 
@@ -22,6 +23,15 @@ import CallToActionSection from './sections/CallToActionSection';
 export default function Home() {
   return (
     <div className="relative min-h-screen bg-surface-dark text-white overflow-hidden">
+      <Helmet>
+        <title>Sasa Travel & Tours - Premium Travel Packages Worldwide</title>
+        <meta name="description" content="Discover unforgettable travel experiences with Sasa Travel & Tours. We offer curated travel packages to Dubai, Bali, Thailand, Vietnam, China, Turkey, and Australia. Book your dream vacation today!" />
+        <meta property="og:title" content="Sasa Travel & Tours - Premium Travel Packages Worldwide" />
+        <meta property="og:description" content="Discover unforgettable travel experiences with Sasa Travel & Tours. Curated packages to Dubai, Bali, Thailand, Vietnam, China, Turkey & Australia." />
+        <meta property="og:type" content="website" />
+        <link rel="canonical" href="https://sasatravel.com" />
+      </Helmet>
+
       <ScrollProgress />
 
       {/* Critical sections */}

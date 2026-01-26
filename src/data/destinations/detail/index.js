@@ -95,8 +95,8 @@ export const DESTINATION_CONFIGS = {
   turkey: {
     id: 'turkey',
     name: 'Turkey',
-    data: chinaDestinationData,
-    config: buildDestinationConfig(chinaDestinationData),
+    data: turkeyData,
+    config: buildDestinationConfig(turkeyData),
   },
   china: {
     id: 'china',

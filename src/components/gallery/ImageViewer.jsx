@@ -4,6 +4,13 @@ import PropTypes from 'prop-types';
 import useImageViewer from '../../hooks/gallery/useImageViewer';
 import { getImageSrc, getImageSrcset, GALLERY_FALLBACK_IMAGE } from '../../utils/galleryImageUtils';
 
+// Configuration object must be defined BEFORE use to prevent ReferenceError
+const config = {
+  minZoom: 0.5,
+  maxZoom: 3,
+  zoomStep: 0.25
+};
+
 const ImageViewer = ({ images, initialIndex = 0, isOpen, onClose }) => {
   const containerRef = useRef(null);
   const previousActiveElement = useRef(null);
@@ -327,12 +334,6 @@ const ImageViewer = ({ images, initialIndex = 0, isOpen, onClose }) => {
       )}
     </motion.div>
   );
-};
-
-const config = {
-  minZoom: 0.5,
-  maxZoom: 3,
-  zoomStep: 0.25
 };
 
 ImageViewer.propTypes = {

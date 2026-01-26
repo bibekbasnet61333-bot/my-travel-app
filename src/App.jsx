@@ -56,13 +56,6 @@ function AppContent() {
             <Route path="/destinations/international/turkey" element={<Turkey />} />
             <Route path="/destinations/international/china" element={<China />} />
             <Route path="/destinations/international/japan" element={<Japan />} />
-            <Route path="/japan" element={<Japan />} />
-            <Route path="/china" element={<China />} />
-            <Route path="/thailand" element={<Thailand />} />
-            <Route path="/vietnam" element={<Vietnam />} />
-            <Route path="/bali" element={<Bali />} />
-            <Route path="/australia" element={<Australia />} />
-            <Route path="/turkey" element={<Turkey />} />
             <Route path="/blogs" element={<Blogs />} />
             <Route path="/blogs/:id" element={<BlogDetailPage />} />
             <Route path="/gallery" element={<GalleryPage />} />

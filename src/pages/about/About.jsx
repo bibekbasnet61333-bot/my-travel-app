@@ -1,4 +1,5 @@
 import { lazy, Suspense, memo } from 'react';
+import { Helmet } from 'react-helmet-async';
 import ErrorBoundary from '../../components/ui/ErrorBoundary';
 
 // Import data directly at the top
@@ -75,6 +76,14 @@ const CallToAction = memo(function CallToAction() {
 function About() {
   return (
     <div className="min-h-screen bg-gray-50">
+      <Helmet>
+        <title>About Us | Sasa Travel & Tours</title>
+        <meta name="description" content="Learn about Sasa Travel & Tours - a premium travel company with 10+ years of experience, 1000+ happy travelers, and 150+ destinations worldwide." />
+        <meta property="og:title" content="About Us | Sasa Travel & Tours" />
+        <meta property="og:description" content="Learn about our journey and commitment to creating unforgettable travel experiences." />
+        <link rel="canonical" href="https://sasatravel.com/about" />
+      </Helmet>
+
       <LazySection component={VideoCarousel} videos={videos} sectionName="VideoCarousel" />
       <LazySection component={WhyChooseUs} points={whyChooseUsPoints} image={whyChooseUsImage} sectionName="WhyChooseUs" />
       <LazySection component={ExperienceStats} stats={experienceStats} sectionName="ExperienceStats" />

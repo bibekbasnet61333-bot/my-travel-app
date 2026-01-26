@@ -52,23 +52,29 @@ export const ITEMS_PER_PAGE = 20;
 // Note: In production, these values should come from environment variables
 // Use import.meta.env for Vite environment variables
 const getWhatsAppNumber = () => {
-  return import.meta.env.VITE_WHATSAPP_PHONE_NUMBER || '+977 9817653406';
+  const envPhone = import.meta.env.VITE_WHATSAPP_PHONE_NUMBER;
+  if (!envPhone && process.env.NODE_ENV === 'production') {
+    throw new Error('VITE_WHATSAPP_PHONE_NUMBER is required in production');
+  }
+  return envPhone || '+977 9817653406';
 };
 
 export const CONTACT_PHONES = {
   WHATSAPP: getWhatsAppNumber(),
   PRIMARY: '+977 9813641003',
-  WHATSAPP_LINK: `https://wa.me/${import.meta.env.VITE_WHATSAPP_PHONE_NUMBER || '9779817653406'}`,
+  WHATSAPP_LINK: `https://wa.me/${import.meta.env.VITE_WHATSAPP_PHONE_NUMBER || '9779817653406'.replace(/\D/g, '')}`,
 };
 
 // Social Media Links - Centralized for maintainability
+// Note: In production, these values should come from environment variables
+// Use import.meta.env for Vite environment variables
 export const SOCIAL_LINKS = {
-  FACEBOOK: import.meta.env.VITE_SOCIAL_FACEBOOK || '#',
-  INSTAGRAM: import.meta.env.VITE_SOCIAL_INSTAGRAM || '#',
-  TWITTER: import.meta.env.VITE_SOCIAL_TWITTER || '#',
-  TIKTOK: import.meta.env.VITE_SOCIAL_TIKTOK || '#',
-  YOUTUBE: import.meta.env.VITE_SOCIAL_YOUTUBE || '#',
-  FACEBOOK_STORIES: import.meta.env.VITE_SOCIAL_FACEBOOK_STORIES || '#',
+  FACEBOOK: import.meta.env.VITE_SOCIAL_FACEBOOK || 'https://facebook.com/sasatravel',
+  INSTAGRAM: import.meta.env.VITE_SOCIAL_INSTAGRAM || 'https://instagram.com/sasatravel',
+  TWITTER: import.meta.env.VITE_SOCIAL_TWITTER || 'https://twitter.com/sasatravel',
+  TIKTOK: import.meta.env.VITE_SOCIAL_TIKTOK || 'https://tiktok.com/@sasatravel',
+  YOUTUBE: import.meta.env.VITE_SOCIAL_YOUTUBE || 'https://youtube.com/@sasatravel',
+  FACEBOOK_STORIES: import.meta.env.VITE_SOCIAL_FACEBOOK_STORIES || 'https://facebook.com/stories/sasatravel',
 };
 
 // Navigation Links - External
@@ -84,9 +90,9 @@ export const CONTACT_EMAILS = {
 
 // Contact Form Constants - Destination Page
 export const DESTINATION_CONTACT_FORM = {
-  // WhatsApp configuration
-  WHATSAPP_LINK: 'https://wa.me/9779817653406',
-  WHATSAPP_NUMBER: '9779817653406',
+  // WhatsApp configuration - use centralized constants
+  WHATSAPP_LINK: CONTACT_PHONES.WHATSAPP_LINK,
+  WHATSAPP_NUMBER: CONTACT_PHONES.WHATSAPP.replace(/\D/g, ''),
 
   // Submit button states
   SUBMIT_STATES: {

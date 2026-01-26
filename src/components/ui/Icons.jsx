@@ -97,6 +97,9 @@ const ALL_ICONS = {
 export const getIcon = (iconName, className = "w-6 h-6") => {
   const IconComponent = ALL_ICONS[iconName];
   if (!IconComponent) {
+    if (process.env.NODE_ENV === 'development') {
+      console.warn(`Icon "${iconName}" not found in Icons.jsx`);
+    }
     return null;
   }
   return <IconComponent className={className} />;

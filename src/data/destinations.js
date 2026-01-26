@@ -142,7 +142,6 @@ export const destinationsHeroConfig = {
   },
   international: {
     images: [
-      '/src/assets/bali.jpg',
       '/src/assets/york.jpg',
       '/src/assets/tokyo.jpg',
       '/src/assets/paris_destination.jpg',

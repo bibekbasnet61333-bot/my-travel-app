@@ -1,4 +1,5 @@
 import { useCallback, useRef } from 'react';
+import { Helmet } from 'react-helmet-async';
 import useContactForm from '../hooks/useContactForm';
 import ContactHeroSection from '../components/contact/sections/ContactHeroSection';
 import ContactFormSection from '../components/contact/sections/ContactFormSection';
@@ -17,6 +18,14 @@ export default function Contact() {
 
   return (
     <div className="bg-gradient-to-b from-gray-50 to-white">
+      <Helmet>
+        <title>Contact Us | Sasa Travel & Tours</title>
+        <meta name="description" content="Get in touch with Sasa Travel & Tours for all your travel inquiries. We respond within 2 hours." />
+        <meta property="og:title" content="Contact Us | Sasa Travel & Tours" />
+        <meta property="og:description" content="Ready to start your journey? Contact us today for personalized travel assistance." />
+        <link rel="canonical" href="https://sasatravel.com/contact" />
+      </Helmet>
+
       <ErrorBoundary level="section" sectionName="ContactHero" fallbackMessage="Unable to load contact hero section.">
         <ContactHeroSection onScrollToForm={scrollToForm} />
       </ErrorBoundary>
