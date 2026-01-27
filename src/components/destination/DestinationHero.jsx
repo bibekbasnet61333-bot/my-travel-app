@@ -119,16 +119,30 @@ const DestinationHero = ({
       transition={{ duration: 1.5 }}
       className={`relative w-screen relative left-[50%] right-[50%] -ml-[50vw] -mr-[50vw] ${minHeightClass} flex flex-col items-center justify-center overflow-hidden`}
     >
-      {/* Background Image */}
+      {/* Background Image - using img element for better LCP */}
       <motion.div
         initial={{ scale: 1.1 }}
         animate={{ scale: 1 }}
         transition={{ duration: 2, ease: 'easeOut' }}
-        className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage: `linear-gradient(rgba(0,0,0,0.25), rgba(0,0,0,0.55)), url("${backgroundImage}")`,
-        }}
-      />
+        className="absolute inset-0 w-full h-full"
+      >
+        {/* Gradient overlay */}
+        <div className={`absolute inset-0 bg-gradient-to-br ${mergedTheme.overlayGradient} z-10`} />
+        <div className="absolute inset-0 bg-black/25 z-10" />
+
+        {/* Image with proper loading attributes for LCP */}
+        <motion.img
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1, ease: 'easeOut' }}
+          src={backgroundImage}
+          alt={title}
+          className="w-full h-full object-cover"
+          fetchpriority="high"
+          loading="eager"
+          decoding="sync"
+        />
+      </motion.div>
 
       {/* Background Overlay with theme colors */}
       <motion.div

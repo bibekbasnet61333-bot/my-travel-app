@@ -42,6 +42,8 @@ const InteractiveWorldMapSection = memo(() => {
                 <img
                   src={homeMapImage}
                   alt="World map destinations visualization"
+                  width="1200"
+                  height="600"
                   className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
                     imageLoaded ? 'opacity-100' : 'opacity-0'
                   }`}

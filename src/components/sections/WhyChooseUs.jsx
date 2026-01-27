@@ -46,6 +46,8 @@ const WhyChooseUs = memo(({ points, image }) => {
             <img
               src={image}
               alt="Why Choose SASA - Global Travel Expert"
+              width="600"
+              height="450"
               className="relative rounded-2xl shadow-lg w-full h-auto object-cover"
               loading="lazy"
               decoding="async"

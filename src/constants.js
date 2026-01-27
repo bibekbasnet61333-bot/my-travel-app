@@ -49,13 +49,22 @@ export const DESTINATIONS = [
 export const ITEMS_PER_PAGE = 20;
 
 // Contact Phone Numbers - Centralized for maintainability
+// IMPORTANT: For security, the WhatsApp phone number should ONLY be used server-side
+// Client-side code should call /api/whatsapp to get the generated WhatsApp URL
 // Fallback number provided for development/staging
 const WHATSAPP_NUMBER = import.meta.env.VITE_WHATSAPP_PHONE_NUMBER || '+9779817653406';
+
+// Phone number for display only (masked for security)
+const DISPLAY_PHONE = '+977 98******06';
 
 export const CONTACT_PHONES = {
   WHATSAPP: WHATSAPP_NUMBER,
   PRIMARY: '+977 9813641003',
-  WHATSAPP_LINK: `https://wa.me/${WHATSAPP_NUMBER.replace(/\D/g, '')}`,
+  DISPLAY: DISPLAY_PHONE,
+  // This should ONLY be used by the server-side API
+  WHATSAPP_LINK: import.meta.env.PROD 
+    ? '/api/whatsapp' 
+    : `https://wa.me/${WHATSAPP_NUMBER.replace(/\D/g, '')}`,
 };
 
 // Social Media Links - Centralized for maintainability

@@ -68,73 +68,75 @@ const DestinationsSection = memo(() => {
 
         {/* Destinations Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
-          {filteredDestinations.map((destination, index) => (
-            <FloatingElement
-              key={destination.id}
-              intensity={0.2}
-              speed={0.15}
-              direction="y"
-              range={12}
-              delay={index * 100}
-            >
-              <Link
-                to={`/destinations/${destination.category}/${destination.id}`}
-                className="group relative block overflow-hidden rounded-xl cursor-pointer transform transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1"
+          {filteredDestinations.map((destination, index) => {
+            return (
+              <FloatingElement
+                key={destination.id}
+                intensity={0.2}
+                speed={0.15}
+                direction="y"
+                range={12}
+                delay={index * 100}
               >
-                {/* Image Container */}
-                <div className="aspect-[4/3] overflow-hidden rounded-xl">
-                  <img
-                    src={destination.image}
-                    alt={destination.name}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                  <div
-                    className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"
-                  />
-                </div>
-
-                {/* Content Overlay */}
-                <div className="absolute inset-0 p-4 sm:p-5 flex flex-col justify-end text-white">
-                  {/* Duration Badge */}
-                  <div className="absolute top-4 right-4">
-                    <AnimatedText
-                      text={destination.duration}
-                      className="px-3 py-1 bg-[#1A1A40] text-white backdrop-blur-sm rounded-full text-xs font-medium"
-                      type="fadeIn"
-                      delay={100}
+                <Link
+                  to={`/destinations/${destination.category}/${destination.id}`}
+                  className="group relative block overflow-hidden rounded-xl cursor-pointer transform transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1"
+                >
+                  {/* Image Container */}
+                  <div className="aspect-[4/3] overflow-hidden rounded-xl">
+                    <img
+                      src={destination.image}
+                      alt={destination.name}
+                      loading="lazy"
+                      decoding="async"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
+                    <div
+                      className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"
                     />
                   </div>
 
-                  {/* Country Label */}
-                  <span className="text-xs sm:text-sm font-medium text-blue-300 mb-1">
-                    {destination.country}
-                  </span>
+                  {/* Content Overlay */}
+                  <div className="absolute inset-0 p-4 sm:p-5 flex flex-col justify-end text-white">
+                    {/* Duration Badge */}
+                    <div className="absolute top-4 right-4">
+                      <AnimatedText
+                        text={destination.duration}
+                        className="px-3 py-1 bg-[#1A1A40] text-white backdrop-blur-sm rounded-full text-xs font-medium"
+                        type="fadeIn"
+                        delay={100}
+                      />
+                    </div>
 
-                  {/* Title */}
-                  <h3 className="text-lg sm:text-xl font-bold mb-1 transform translate-y-0 group-hover:translate-y-0 transition-transform duration-300">
-                    {destination.name}
-                  </h3>
-
-                  {/* Description */}
-                  <p className="text-gray-200 text-sm mb-3 transform translate-y-0 group-hover:translate-y-0 transition-transform duration-300 delay-75 line-clamp-1">
-                    {destination.description}
-                  </p>
-
-                  {/* Explore Button */}
-                  <div className="flex items-center">
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/15 backdrop-blur-sm rounded-full text-sm font-medium group-hover:bg-white/25 transition-colors">
-                      Explore
-                      <svg className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
+                    {/* Country Label */}
+                    <span className="text-xs sm:text-sm font-medium text-blue-300 mb-1">
+                      {destination.country}
                     </span>
+
+                    {/* Title */}
+                    <h3 className="text-lg sm:text-xl font-bold mb-1 transform translate-y-0 group-hover:translate-y-0 transition-transform duration-300">
+                      {destination.name}
+                    </h3>
+
+                    {/* Description */}
+                    <p className="text-gray-200 text-sm mb-3 transform translate-y-0 group-hover:translate-y-0 transition-transform duration-300 delay-75 line-clamp-1">
+                      {destination.description}
+                    </p>
+
+                    {/* Explore Button */}
+                    <div className="flex items-center">
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/15 backdrop-blur-sm rounded-full text-sm font-medium group-hover:bg-white/25 transition-colors">
+                        Explore
+                        <svg className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </span>
+                    </div>
                   </div>
-                </div>
-              </Link>
-            </FloatingElement>
-          ))}
+                </Link>
+              </FloatingElement>
+            );
+          })}
         </div>
 
         {/* View All Button */}

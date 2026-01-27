@@ -18,13 +18,12 @@ const Japan = lazy(() => import("./pages/japan/Japan"));
 const About = lazy(() => import("./pages/about/About"));
 const Contact = lazy(() => import("./pages/Contact_new"));
 const Blogs = lazy(() => import("./pages/blogs/Blogs"));
-const BlogDetailPage = lazy(() => import("./pages/blogs/BlogDetailPage"));
-const GalleryPage = lazy(() => import("./pages/gallery/GalleryPage"));
+const BlogDetail = lazy(() => import("./pages/blogs/BlogDetail"));
+const Gallery = lazy(() => import("./pages/gallery/index"));
 const GalleryDetailPage = lazy(() => import("./pages/gallery/GalleryDetailPage"));
-const NotFound = lazy(() => import("./pages/NotFound"));
-
 const Packages = lazy(() => import("./pages/Packages"));
 const PackageDetail = lazy(() => import("./pages/PackageDetail"));
+const NotFound = lazy(() => import("./pages/NotFound"));
 
 // Loading fallback component
 function PageLoader() {
@@ -46,26 +45,26 @@ function AppContent() {
         <ErrorBoundary fallbackMessage="Something went wrong loading this page.">
           <Suspense fallback={<PageLoader />}>
             <Routes key={routeKey}>
-            <Route path="/" element={<Home />} />
-            <Route path="/destinations" element={<Destinations />} />
-            <Route path="/destinations/international/bali" element={<Bali />} />
-            <Route path="/destinations/international/vietnam" element={<Vietnam />} />
-            <Route path="/destinations/international/dubai" element={<Dubai />} />
-            <Route path="/destinations/international/thailand" element={<Thailand />} />
-            <Route path="/destinations/international/australia" element={<Australia />} />
-            <Route path="/destinations/international/turkey" element={<Turkey />} />
-            <Route path="/destinations/international/china" element={<China />} />
-            <Route path="/destinations/international/japan" element={<Japan />} />
-            <Route path="/blogs" element={<Blogs />} />
-            <Route path="/blogs/:id" element={<BlogDetailPage />} />
-            <Route path="/gallery" element={<GalleryPage />} />
-            <Route path="/gallery/:slug" element={<GalleryDetailPage />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/packages" element={<Packages />} />
-            <Route path="/packages/:id" element={<PackageDetail />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/destinations" element={<Destinations />} />
+              <Route path="/destinations/international/bali" element={<Bali />} />
+              <Route path="/destinations/international/vietnam" element={<Vietnam />} />
+              <Route path="/destinations/international/dubai" element={<Dubai />} />
+              <Route path="/destinations/international/thailand" element={<Thailand />} />
+              <Route path="/destinations/international/australia" element={<Australia />} />
+              <Route path="/destinations/international/turkey" element={<Turkey />} />
+              <Route path="/destinations/international/china" element={<China />} />
+              <Route path="/destinations/international/japan" element={<Japan />} />
+              <Route path="/blogs" element={<Blogs />} />
+              <Route path="/blogs/:id" element={<BlogDetail />} />
+              <Route path="/gallery" element={<Gallery />} />
+              <Route path="/gallery/:slug" element={<GalleryDetailPage />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/packages" element={<Packages />} />
+              <Route path="/packages/:id" element={<PackageDetail />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
           </Suspense>
         </ErrorBoundary>
       </main>

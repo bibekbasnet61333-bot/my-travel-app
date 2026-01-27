@@ -26,6 +26,7 @@ const BlogDetail = ({ blog, relatedBlogs, searchQuery = '' }) => {
   const [readingProgress, setReadingProgress] = useState(0);
   const [activeSection, setActiveSection] = useState('');
   const [showProgress, setShowProgress] = useState(false);
+  const [tocItems, setTocItems] = useState([]);
 
   useEffect(() => {
     const updateReadingProgress = () => {
@@ -59,26 +60,55 @@ const BlogDetail = ({ blog, relatedBlogs, searchQuery = '' }) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const generateTOC = (content) => {
-    if (!content) return [];
-    const headings = [];
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(content, 'text/html');
-    const headingElements = doc.querySelectorAll('h1, h2, h3, h4, h5, h6');
+  useEffect(() => {
+    if (!blog?.content) {
+      setTocItems([]);
+      return;
+    }
 
-    headingElements.forEach((heading, index) => {
-      const level = parseInt(heading.tagName.charAt(1));
-      const text = heading.textContent.trim();
-      const baseId = slugify(text);
-      const id = baseId || `section-${index}`;
+    const generateTOC = () => {
+      const headings = [];
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(blog.content, 'text/html');
+      const headingElements = doc.querySelectorAll('h1, h2, h3, h4, h5, h6');
 
-      headings.push({ id, text, level });
-      heading.id = id;
-      heading.setAttribute('data-section', id);
-    });
+      headingElements.forEach((heading, index) => {
+        const level = parseInt(heading.tagName.charAt(1));
+        const text = heading.textContent.trim();
+        const existingId = heading.getAttribute('id');
+        const id = existingId || slugify(text) || `section-${index}`;
 
-    return headings;
-  };
+        headings.push({ id, text, level });
+        heading.id = id;
+        heading.setAttribute('data-section', id);
+      });
+
+      return headings;
+    };
+
+    const items = generateTOC();
+    setTocItems(items);
+
+    // Inject data-section attributes into the rendered content
+    const injectDataSection = () => {
+      const contentDiv = document.querySelector('.blog-content, .prose');
+      if (contentDiv) {
+        const headings = contentDiv.querySelectorAll('h1, h2, h3, h4, h5, h6');
+        headings.forEach((heading, index) => {
+          if (!heading.getAttribute('data-section')) {
+            const text = heading.textContent.trim();
+            const id = slugify(text) || `section-${index}`;
+            heading.setAttribute('data-section', id);
+            heading.id = id;
+          }
+        });
+      }
+    };
+
+    // Small delay to ensure content is rendered
+    const timer = setTimeout(injectDataSection, 100);
+    return () => clearTimeout(timer);
+  }, [blog?.content]);
 
   if (!blog) {
     return (
@@ -96,7 +126,6 @@ const BlogDetail = ({ blog, relatedBlogs, searchQuery = '' }) => {
     );
   }
 
-  const tocItems = generateTOC(blog.content);
   const readTimeText = blog.readTime ? `${blog.readTime} min read` : `${DEFAULT_READ_TIME} min read`;
 
   const jsonLd = {
@@ -119,6 +148,8 @@ const BlogDetail = ({ blog, relatedBlogs, searchQuery = '' }) => {
     wordCount: blog.readTime ? blog.readTime * 200 : DEFAULT_READ_TIME * 200,
   };
 
+  const showSidebar = tocItems.length > 0;
+
   return (
     <>
       <Helmet>
@@ -139,15 +170,24 @@ const BlogDetail = ({ blog, relatedBlogs, searchQuery = '' }) => {
           <BlogHeader blog={blog} />
           <div className="container mx-auto px-6 pb-16 pt-4">
             <div className="max-w-7xl mx-auto">
-              <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-                {tocItems.length > 0 && (
-                  <aside className="hidden lg:block lg:col-span-1">
-                    <div className="sticky top-28">
-                      <BlogTOC items={tocItems} activeSection={activeSection} readingProgress={readingProgress} title="Table of Contents" showProgress={true} />
+              <div className="flex flex-col lg:flex-row gap-8">
+                {/* Sidebar - Table of Contents */}
+                {showSidebar && (
+                  <aside className="lg:w-64 flex-shrink-0">
+                    <div className="lg:sticky lg:top-20">
+                      <BlogTOC 
+                        items={tocItems} 
+                        activeSection={activeSection} 
+                        readingProgress={readingProgress} 
+                        title="Table of Contents" 
+                        showProgress={true} 
+                      />
                     </div>
                   </aside>
                 )}
-                <main className={tocItems.length > 0 ? 'lg:col-span-3' : 'lg:col-span-4'}>
+                
+                {/* Main Content */}
+                <main className={showSidebar ? 'lg:flex-1' : 'w-full'}>
                   <header className="mb-8">
                     <div className="flex flex-wrap items-center gap-4 mb-6">
                       <span className="px-4 py-2 bg-gradient-to-r from-cyan-100 to-blue-100 text-cyan-800 rounded-full text-sm font-semibold capitalize border border-cyan-200">{blog.category}</span>

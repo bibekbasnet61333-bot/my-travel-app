@@ -9,7 +9,13 @@ const GalleryHero = ({ category, isLoading }) => {
 
   // Get hero image from config
   const heroConfig = useMemo(() => {
-    return GALLERY_HERO_IMAGES[category] || GALLERY_HERO_IMAGES.national;
+    const original = GALLERY_HERO_IMAGES[category] || GALLERY_HERO_IMAGES.national;
+    return {
+      ...original,
+      src: original.image,
+      srcSet: null,
+      sizes: null
+    };
   }, [category]);
 
   // Hero data based on category
@@ -55,18 +61,29 @@ const GalleryHero = ({ category, isLoading }) => {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.4 }}
       className="relative h-[50vh] md:h-[60vh] overflow-hidden">
-      {/* Background Image with Overlay */}
+      {/* Background Image - using img element for better LCP */}
       <motion.div
         initial={{ opacity: 0, scale: 1.1 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.8, ease: 'easeOut' }}
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.55) 100%), url("${heroConfig.image}")`
-        }}
-        role="img"
-        aria-label={heroConfig.alt}
-      />
+        className="absolute inset-0"
+      >
+        {/* Gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-black/20 to-black/55 z-10" />
+
+        {/* Image with proper loading attributes for LCP */}
+        <motion.img
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.4 }}
+          src={heroConfig.src}
+          alt={heroConfig.alt || 'Gallery hero image'}
+          className="w-full h-full object-cover"
+          fetchpriority="high"
+          loading="eager"
+          decoding="sync"
+        />
+      </motion.div>
 
       {/* Content */}
       <div className="relative z-10 h-full flex flex-col items-center justify-center text-white px-6">

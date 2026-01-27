@@ -4,7 +4,10 @@ import { useMemo } from 'react';
 const BlogContent = ({ content, searchQuery = '' }) => {
   const processedContent = useMemo(() => {
     if (!content) return '';
-    const sanitizedContent = DOMPurify.sanitize(content);
+    const sanitizedContent = DOMPurify.sanitize(content, {
+      ADD_ATTR: ['id', 'data-section'],
+      ALLOW_ATTR: ['id', 'data-section']
+    });
 
     if (!searchQuery || !searchQuery.trim()) {
       return sanitizedContent;

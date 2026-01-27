@@ -19,10 +19,22 @@ export default defineConfig({
       host: 'localhost',
     },
     headers: {
-      'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://images.unsplash.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' ws://localhost:* wss://localhost:* https://api.sasatravel.com https://images.unsplash.com https://www.googletagmanager.com; frame-src https://www.google.com https://maps.google.com;",
+      'Content-Security-Policy': [
+        "default-src 'self'",
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://images.unsplash.com",
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+        "img-src 'self' data: https: blob:",
+        "font-src 'self' https://fonts.gstatic.com",
+        "connect-src 'self' ws://localhost:* wss://localhost:* https://api.sasatravel.com https://images.unsplash.com https://www.googletagmanager.com",
+        "frame-src https://www.google.com https://maps.google.com",
+        "base-uri 'self'",
+        "form-action 'self'",
+        "upgrade-insecure-requests"
+      ].join('; '),
       'X-Frame-Options': 'SAMEORIGIN',
       'X-Content-Type-Options': 'nosniff',
       'Referrer-Policy': 'strict-origin-when-cross-origin',
+      'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
     },
   },
   build: {

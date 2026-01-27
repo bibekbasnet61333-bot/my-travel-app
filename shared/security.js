@@ -7,10 +7,14 @@
 
 const isBrowser = typeof window !== 'undefined';
 
-// Setup crypto for Node.js (v18+ has global crypto, older needs webcrypto)
-const webCrypto = isBrowser
-  ? crypto
-  : (await import('crypto')).webcrypto;
+// Setup crypto for Node.js - use global crypto if available
+let webCrypto;
+if (isBrowser) {
+  webCrypto = crypto;
+} else {
+  // For Node.js, use the global crypto module (v18+)
+  webCrypto = globalThis.crypto || globalThis.msCrypto;
+}
 
 // =============================================================================
 // Buffer Helpers (Browser-safe - no Buffer usage)
